@@ -48,10 +48,28 @@ public class AmqpControllerScript : MonoBehaviour {
 
         AmqpClient.Instance.Connection = "ITB";
         AmqpClient.Connect();
+
+        AmqpClient.Instance.OnConnected.AddListener(HandleConnected);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
 	}
+
+    void HandleConnected(AmqpClient clientParam)
+    {
+        exchangeSubscription = new AmqpExchangeSubscription(responExchangeName, responExchangeType, responRoutingKey, HandleExchangeMassageRecieved);
+        AmqpClient.Subscribe(exchangeSubscription);
+
+        serverTerhubung = true;
+    }
+
+    void HandleExchangeMassageRecieved(AmqpExchangeReceivedMessage received)
+    {
+        var receivedJson = System.Text.Encoding.UTF8.GetString(received.Message.Body);
+        Debug.Log("JSON Murni = " + receivedJson);
+        var msg = CymaticLabs.Unity3D.Amqp.SimpleJSON.JSON.Parse(receivedJson);
+        Debug.Log("JSON Decode = " + msg);
+    }
 }
