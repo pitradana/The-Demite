@@ -11,11 +11,11 @@ public class AmqpControllerScript : MonoBehaviour {
     public bool serverTerhubung;
 
     //properti untuk koneksi
-    public string memintaExchangeName;
-    public string memintaRoutingKey;
+    public string requestExchange;
+    public string requestRoutingKey;
 
-    public string responExchangeName;
-    public string responRoutingKey;
+    public string responseExchange;
+    public string responseRoutingKey;
 
     public AmqpExchangeTypes responExchangeType;
 
@@ -39,12 +39,15 @@ public class AmqpControllerScript : MonoBehaviour {
     {
         serverTerhubung = false;
 
-        memintaExchangeName = "";
-        memintaRoutingKey = "";
+        //inisialisasi properti koneksi
+        requestExchange = "TheDemiteRequestExchange";
+        requestRoutingKey = "TheDemiteRequestRoutingKey";
 
-        responExchangeName = "";
-        responRoutingKey = "";
+        responseExchange = "TheDemiteResponseExchange";
+        responseRoutingKey = "TheDemiteResponseRoutingKey";
         responExchangeType = AmqpExchangeTypes.Direct;
+
+        //connect to rabitmq server
 
         AmqpClient.Instance.Connection = "ITB";
         AmqpClient.Connect();
@@ -59,7 +62,7 @@ public class AmqpControllerScript : MonoBehaviour {
 
     void HandleConnected(AmqpClient clientParam)
     {
-        exchangeSubscription = new AmqpExchangeSubscription(responExchangeName, responExchangeType, responRoutingKey, HandleExchangeMassageRecieved);
+        exchangeSubscription = new AmqpExchangeSubscription(responseExchange, responExchangeType, responseRoutingKey, HandleExchangeMassageRecieved);
         AmqpClient.Subscribe(exchangeSubscription);
 
         serverTerhubung = true;
