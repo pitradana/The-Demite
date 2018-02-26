@@ -82,8 +82,8 @@ public class MapController : MonoBehaviour {
     {
         this.uniqueId = Guid.NewGuid().ToString();
         this.playerName = "pitradana"; // PlayerPrefs.GetString("username");
-        this.latitude = -6.915108f;
-        this.longitude = 107.607206f;
+        this.latitude = -6.890563f; //-6.915108f;
+        this.longitude = 107.611084f; //107.607206f;
         this.lastLatitude = float.MinValue;
         this.lastLongitude = float.MinValue;
         this.petName = "pocong"; // PlayerPrefs.GetString("petName");
@@ -444,7 +444,7 @@ public class MapController : MonoBehaviour {
                     ghostNameMesh.fontSize = 100;
                     ghostNameMesh.color = Color.green;
 
-                    Font font = Resources.Load<Font>("Arial");
+                    Font font = Resources.Load<Font>("Font/SHADSER");
                     ghostNameMesh.font = font;
                     var mr = ghostNameMesh.GetComponent<Renderer>();
                     mr.material = font.material;
@@ -460,7 +460,7 @@ public class MapController : MonoBehaviour {
                     meshText.fontSize = 100;
                     meshText.color = Color.green;
 
-                    Font font1 = Resources.Load<Font>("Arial");
+                    Font font1 = Resources.Load<Font>("Font/SHADSER");
                     meshText.font = font1;
                     var mr1 = meshText.GetComponent<Renderer>();
                     mr1.material = font1.material;
@@ -710,7 +710,7 @@ public class MapController : MonoBehaviour {
         text.fontStyle = FontStyle.Italic;
         text.anchor = TextAnchor.MiddleCenter;
         text.alignment = TextAlignment.Center;
-        Font font = Resources.Load<Font>("Arial");
+        Font font = Resources.Load<Font>("Font/SHADSER");
         text.font = font;
 
         var mr = text.GetComponent<Renderer>();

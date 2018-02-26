@@ -35,6 +35,7 @@ public class LoginScript : MonoBehaviour {
         var receivedJson = System.Text.Encoding.UTF8.GetString(received.Message.Body);
         var msg = CymaticLabs.Unity3D.Amqp.SimpleJSON.JSON.Parse(receivedJson);
         
+
         if(msg != null)
         {
             string msgId = (string)msg["id"];
