@@ -31,6 +31,7 @@ public class MapController : MonoBehaviour {
 
     private GameObject mainCam;
     private GameObject petObject;
+    private GameObject GhostObject;
 
     public float centerPosX;
     public float centerPosY;
@@ -82,8 +83,8 @@ public class MapController : MonoBehaviour {
     {
         this.uniqueId = Guid.NewGuid().ToString();
         this.playerName = "pitradana"; // PlayerPrefs.GetString("username");
-        this.latitude = -6.890563f; //-6.915108f;
-        this.longitude = 107.611084f; //107.607206f;
+        this.latitude = -6.915108f; //-6.915108f;
+        this.longitude = 107.607206f; //107.607206f;
         this.lastLatitude = float.MinValue;
         this.lastLongitude = float.MinValue;
         this.petName = "pocong"; // PlayerPrefs.GetString("petName");
@@ -217,6 +218,7 @@ public class MapController : MonoBehaviour {
 
                     if (firstPet)
                     {
+                        //Debug.Log(lastLatitude + " & " + lastLongitude);
                         petObject.transform.position = new Vector3((float)msg["playerPosX"], 0, (float)msg["playerPosY"]);
                         firstPet = false;
                     }
@@ -555,11 +557,14 @@ public class MapController : MonoBehaviour {
             if(tempData["listCoordinate"].Count == 1)
             {
                 string buildingName = (string)tempData["buildingName"];
+                Debug.Log("nama gedung ini adalah  "+buildingName);
                 if(buildingName != null)
                 {
-                    var coordinate = tempData["listCoordinate"][0];
-
+                    var coordinate = tempData["listCoordinate"][0];                  
                     this.ShowName(new Vector3((float)coordinate["latitude"], 12f, (float)coordinate["longitude"]), new Vector3(), buildingName, "MapObject", "buildingName", Color.green);
+
+                    petObject.transform.position = new Vector3((float)coordinate["latitude"], 12f, (float)coordinate["longitude"]);
+                    Debug.Log("pocong = " + petObject.transform.position);
                 }
             }
             else
@@ -713,6 +718,10 @@ public class MapController : MonoBehaviour {
         Font font = Resources.Load<Font>("Font/SHADSER");
         text.font = font;
 
+        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
+        GameObject pocong = GameObject.Find("Pocong");
+
         var mr = text.GetComponent<Renderer>();
         mr.material = font.material;
 
@@ -724,10 +733,25 @@ public class MapController : MonoBehaviour {
         }
         else if(typeName == "buildingName" || typeName == "poiName")
         {
-            text.text = "<Builing>/pot>\n" + objectName;
+            Debug.Log("building name = " + typeName + " & POI Name = " +typeName);
+            text.text = "<Building>/pot>\n" + objectName;
+
+            cube.transform.position = textPosStart;
+            
+            //Instantiate(pocong, textPosStart, Quaternion.identity);
+            
+
             gameObject.transform.position = textPosStart;
             gameObject.AddComponent<NameController>();
         }
+    }
+
+    void ShowGhost(Vector3 textPosStart, Vector3 textPostEnd, string objectName, string tagName, string typeName, Color color)
+    {
+        GameObject gameObject = new GameObject(typeName + "_GhostMesh");
+        gameObject.tag = tagName;
+
+        //var Ghost = gameObject.AddComponent<Mes>
     }
 
     Mesh RevertNormals(Mesh mesh)
