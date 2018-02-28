@@ -557,11 +557,15 @@ public class MapController : MonoBehaviour {
             if(tempData["listCoordinate"].Count == 1)
             {
                 string buildingName = (string)tempData["buildingName"];
+
                 Debug.Log("nama gedung ini adalah  "+buildingName);
+
                 if(buildingName != null)
                 {
                     var coordinate = tempData["listCoordinate"][0];                  
                     this.ShowName(new Vector3((float)coordinate["latitude"], 12f, (float)coordinate["longitude"]), new Vector3(), buildingName, "MapObject", "buildingName", Color.green);
+
+                    this.ShowGhost(new Vector3((float)coordinate["latitude"], 10f, (float)coordinate["longitude"]), buildingName, "buildingName");
 
                     petObject.transform.position = new Vector3((float)coordinate["latitude"], 12f, (float)coordinate["longitude"]);
                     Debug.Log("pocong = " + petObject.transform.position);
@@ -718,8 +722,6 @@ public class MapController : MonoBehaviour {
         Font font = Resources.Load<Font>("Font/SHADSER");
         text.font = font;
 
-        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-
         GameObject pocong = GameObject.Find("Pocong");
 
         var mr = text.GetComponent<Renderer>();
@@ -729,27 +731,28 @@ public class MapController : MonoBehaviour {
         {
             text.text = "<road>\n" + objectName;
             gameObject.transform.position = Vector3.Lerp(textPosStart, textPostEnd, 0.5f);
-            gameObject.AddComponent<NameController >();
+            gameObject.AddComponent<NameController>();
         }
         else if(typeName == "buildingName" || typeName == "poiName")
         {
             Debug.Log("building name = " + typeName + " & POI Name = " +typeName);
             text.text = "<Building>/pot>\n" + objectName;
 
-            cube.transform.position = textPosStart;
-            
-            //Instantiate(pocong, textPosStart, Quaternion.identity);
-            
+           //cube.transform.position = textPostEnd;
 
             gameObject.transform.position = textPosStart;
             gameObject.AddComponent<NameController>();
         }
     }
 
-    void ShowGhost(Vector3 textPosStart, Vector3 textPostEnd, string objectName, string tagName, string typeName, Color color)
+    void ShowGhost(Vector3 textPosStart, string objectName, string typeName)
     {
-        GameObject gameObject = new GameObject(typeName + "_GhostMesh");
-        gameObject.tag = tagName;
+        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
+        if(typeName == "buildingName" || typeName == "poiName")
+        {
+            cube.transform.position = textPosStart;
+        }
 
         //var Ghost = gameObject.AddComponent<Mes>
     }
