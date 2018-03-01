@@ -24,7 +24,7 @@ public class CameraController : MonoBehaviour {
         float pos = (Camera.main.nearClipPlane + 1000f);
         plane.transform.position = Camera.main.transform.position + Camera.main.transform.forward * pos;
         float h = (Mathf.Tan(Camera.main.fieldOfView * Mathf.Deg2Rad * 0.5f) * pos * 2f) / 10.0f;
-        plane.transform.localScale = new Vector3(h * Camera.main.aspect, 1.0f, h);
+        plane.transform.localScale = new Vector3(h * Camera.main.aspect, 2.0f, h);
 
         if(webcamTexture == null)
         {
