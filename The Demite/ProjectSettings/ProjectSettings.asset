@@ -4,24 +4,24 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 13
-  productGUID: 22d9c0ad22f66f84cb77b16b96d29ab0
+  productGUID: 9e12903aa243193479e3a5d124bb5c78
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
-  defaultScreenOrientation: 0
+  defaultScreenOrientation: 4
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: TMDG11
+  companyName: DefaultCompany
   productName: The Demite
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
-  m_SplashScreenBackgroundColor: {r: 0.75, g: 0.1875, b: 0.32812527, a: 1}
+  m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
   m_ShowUnitySplashScreen: 1
   m_ShowUnitySplashLogo: 1
   m_SplashScreenOverlayOpacity: 1
   m_SplashScreenAnimation: 1
   m_SplashScreenLogoStyle: 1
-  m_SplashScreenDrawMode: 1
+  m_SplashScreenDrawMode: 0
   m_SplashScreenBackgroundAnimationZoom: 1
   m_SplashScreenLogoAnimationZoom: 1
   m_SplashScreenBackgroundLandscapeAspect: 1
@@ -31,18 +31,14 @@ PlayerSettings:
     x: 0
     y: 0
     width: 1
-    height: 0.99993026
+    height: 1
   m_SplashScreenBackgroundPortraitUvs:
     serializedVersion: 2
     x: 0
     y: 0
     width: 1
-    height: 0.99993026
-  m_SplashScreenLogos:
-  - logo: {fileID: 10404, guid: 0000000000000000e000000000000000, type: 0}
-    duration: 2
-  - logo: {fileID: 21300030, guid: c54b2022fe2344c4691dc797d5fcbdf6, type: 3}
-    duration: 2
+    height: 1
+  m_SplashScreenLogos: []
   m_VirtualRealitySplashScreen: {fileID: 0}
   m_HolographicTrackingLossScreen: {fileID: 0}
   defaultScreenWidth: 1024
@@ -151,9 +147,7 @@ PlayerSettings:
   resolutionScalingMode: 0
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
-  applicationIdentifier:
-    Android: com.TeamThesis.TheDemite
-    Standalone: com.TeamThesis.TheDemite
+  applicationIdentifier: {}
   buildNumber: {}
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 16
@@ -242,45 +236,10 @@ PlayerSettings:
     banner: {fileID: 0}
   androidGamepadSupportLevel: 0
   resolutionDialogBanner: {fileID: 0}
-  m_BuildTargetIcons:
-  - m_BuildTarget: Android
-    m_Icons:
-    - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: a9701e083a93fc04387b8d3a33ebc27f, type: 3}
-      m_Width: 192
-      m_Height: 192
-      m_Kind: 0
-    - serializedVersion: 2
-      m_Icon: {fileID: 0}
-      m_Width: 144
-      m_Height: 144
-      m_Kind: 0
-    - serializedVersion: 2
-      m_Icon: {fileID: 0}
-      m_Width: 96
-      m_Height: 96
-      m_Kind: 0
-    - serializedVersion: 2
-      m_Icon: {fileID: 0}
-      m_Width: 72
-      m_Height: 72
-      m_Kind: 0
-    - serializedVersion: 2
-      m_Icon: {fileID: 0}
-      m_Width: 48
-      m_Height: 48
-      m_Kind: 0
-    - serializedVersion: 2
-      m_Icon: {fileID: 0}
-      m_Width: 36
-      m_Height: 36
-      m_Kind: 0
+  m_BuildTargetIcons: []
   m_BuildTargetBatching: []
   m_BuildTargetGraphicsAPIs: []
-  m_BuildTargetVRSettings:
-  - m_BuildTarget: Android
-    m_Enabled: 0
-    m_Devices: []
+  m_BuildTargetVRSettings: []
   m_BuildTargetEnableVuforiaSettings: []
   openGLRequireES31: 0
   openGLRequireES31AEP: 0
@@ -538,10 +497,8 @@ PlayerSettings:
   psp2InfoBarColor: 0
   psp2ScriptOptimizationLevel: 0
   psmSplashimage: {fileID: 0}
-  splashScreenBackgroundSourceLandscape: {fileID: 21300000, guid: 838328a22e006e34d84ea1463a94f985,
-    type: 3}
-  splashScreenBackgroundSourcePortrait: {fileID: 21300000, guid: 838328a22e006e34d84ea1463a94f985,
-    type: 3}
+  splashScreenBackgroundSourceLandscape: {fileID: 0}
+  splashScreenBackgroundSourcePortrait: {fileID: 0}
   spritePackerPolicy: 
   webGLMemorySize: 256
   webGLExceptionSupport: 1
@@ -555,8 +512,7 @@ PlayerSettings:
   webGLUseEmbeddedResources: 0
   webGLUseWasm: 0
   webGLCompressionFormat: 1
-  scriptingDefineSymbols:
-    1: 
+  scriptingDefineSymbols: {}
   platformArchitecture: {}
   scriptingBackend: {}
   incrementalIl2cppBuild: {}
@@ -643,14 +599,12 @@ PlayerSettings:
     daydream:
       daydreamIconForeground: {fileID: 0}
       daydreamIconBackground: {fileID: 0}
-  cloudServicesEnabled:
-    Collab: 1
-    UNet: 1
+  cloudServicesEnabled: {}
   facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 2
-  cloudProjectId: 3411d793-c9ca-4a0d-b8f8-7ea9193dda38
-  projectName: The Demite (1)
-  organizationId: the-demite-thesis
+  cloudProjectId: 
+  projectName: 
+  organizationId: 
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
