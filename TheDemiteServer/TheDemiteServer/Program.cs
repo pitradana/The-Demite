@@ -234,8 +234,8 @@ namespace TheDemiteServer
 
                             // send response
                             var newMessage = Encoding.UTF8.GetBytes(jsonString);
-                            channel.BasicPublish(exchange: "DigipetResponseExchange",
-                                                 routingKey: "DigipetResponseRoutingKey",
+                            channel.BasicPublish(exchange: "TheDemiteResponseExchange",
+                                                 routingKey: "TheDemiteResponseRoutingKey",
                                                  basicProperties: null,
                                                  body: newMessage);
 
@@ -266,8 +266,8 @@ namespace TheDemiteServer
                             Console.WriteLine(" list player2 = " + jsonString2);
 
                             var newMessage2 = Encoding.UTF8.GetBytes(jsonString2);
-                            channel.BasicPublish(exchange: "DigipetResponseExchange",
-                                                 routingKey: "DigipetResponseRoutingKey",
+                            channel.BasicPublish(exchange: "TheDemiteResponseExchange",
+                                                 routingKey: "TheDemiteResponseRoutingKey",
                                                  basicProperties: null,
                                                  body: newMessage2);
 
@@ -285,8 +285,8 @@ namespace TheDemiteServer
 
                             // send response
                             var newMessage = Encoding.UTF8.GetBytes(jsonString);
-                            channel.BasicPublish(exchange: "DigipetResponseExchange",
-                                                 routingKey: "DigipetResponseRoutingKey",
+                            channel.BasicPublish(exchange: "TheDemiteResponseExchange",
+                                                 routingKey: "TheDemiteResponseRoutingKey",
                                                  basicProperties: null,
                                                  body: newMessage);
 
@@ -308,8 +308,8 @@ namespace TheDemiteServer
 
                             // send response
                             var newMessage = Encoding.UTF8.GetBytes(jsonString);
-                            channel.BasicPublish(exchange: "DigipetResponseExchange",
-                                                 routingKey: "DigipetResponseRoutingKey",
+                            channel.BasicPublish(exchange: "TheDemiteResponseExchange",
+                                                 routingKey: "TheDemiteResponseRoutingKey",
                                                  basicProperties: null,
                                                  body: newMessage);
 
@@ -375,8 +375,8 @@ namespace TheDemiteServer
                             Console.WriteLine(" list player = " + jsonString);
 
                             var newMessage = Encoding.UTF8.GetBytes(jsonString);
-                            channel.BasicPublish(exchange: "DigipetResponseExchange",
-                                                 routingKey: "DigipetResponseRoutingKey",
+                            channel.BasicPublish(exchange: "TheDemiteResponseExchange",
+                                                 routingKey: "TheDemiteResponseRoutingKey",
                                                  basicProperties: null,
                                                  body: newMessage);
 
