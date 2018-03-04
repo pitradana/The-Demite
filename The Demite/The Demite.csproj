@@ -324,6 +324,7 @@
     <Compile Include="Assets\Script\SplashscreenScript.cs" />
     <Compile Include="Assets\Script\Triangulator.cs" />
     <Compile Include="Assets\Testing\GameWordManager.cs" />
+    <Compile Include="Assets\Testing\PhoneCamera.cs" />
     <Compile Include="Assets\Testing\Question.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

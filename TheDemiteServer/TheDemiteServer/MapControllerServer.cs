@@ -13,7 +13,8 @@ namespace TheDemiteServer
     {
         private string format = "geojson";                                                                                 // format data of mapzen vector tile
         private string url = "http://167.205.7.235:8080/geoserver/gwc/service/tms/1.0.0/mapproject%3Abdg_planet_osm_roads@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
-        private string urlPolygon = "http://167.205.7.235:8080/geoserver/gwc/service/tms/1.0.0/mapproject%3Abandung_planet_osm_polygon_polygons@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
+
+        private string urlPolygon = "http://167.205.7.235:8080/geoserver/gwc/service/tms/1.0.0/mapproject%3Abandung_planet_osm_polygon@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
         private string urlPoint = "http://167.205.7.235:8080/geoserver/gwc/service/tms/1.0.0/mapproject%3Abdg_planet_osm_point@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
         private string mapzenApiKey = "mapzen-KhT9o6J";                                                                 // mapzen api key. get the api key by sign up to mapzen
         //private string mapzenUrl = "http://tile.mapzen.com/mapzen/vector/v1/{0}/{1}/{2}/{3}.{4}?api_key={5}";           // mapzen vector tile url. 0 => layers, 1 => zoom level, 2 => x tile coordinate, 3 => y tile coordinate, 4 => vector tile data format, 5 => mapzen api key
@@ -143,7 +144,9 @@ namespace TheDemiteServer
                     for (int j = 0; j < tempData.geometry.coordinates[0].Count; j++)
                     {
                         var coordinate = tempData.geometry.coordinates[0][j];
-                        float[] mercator = GeoConverter.GeoCoorToMercatorProjection((float)Convert.ToDouble(coordinate[1]), (float)Convert.ToDouble(coordinate[0]));
+
+
+                        //float[] mercator = GeoConverter.GeoCoorToMercatorProjection((float)Convert.ToDouble(coordinate[1]), (float)Convert.ToDouble(coordinate[0]));
                         /*
                         float tempX = mercator[0] - this.centerMercatorX;
                         float tempY = mercator[1] - this.centerMercatorY;
@@ -160,8 +163,20 @@ namespace TheDemiteServer
                         buildingData.listCoordinate.Add(coor);
                     }
 
-                    //buildingData.buildingName = tempData.properties.name;
+                    buildingData.buildingName = tempData.properties.name;
                     this.listMapData.listBuildingData.Add(buildingData);
+
+                    //add centeroid of polygon
+                    BuildingData centeroidData = new BuildingData();
+                    centeroidData.listCoordinate = new List<Coordinate>();
+
+                    float[] centeroid = this.FindCenteroid(buildingData.listCoordinate);
+                    Coordinate coorCenteroid = new Coordinate();
+                    coorCenteroid.latitude = centeroid[0];
+                    coorCenteroid.longitude = centeroid[1];
+                    centeroidData.listCoordinate.Add(coorCenteroid);
+                    centeroidData.buildingName = tempData.properties.name;
+                    this.listMapData.listBuildingData.Add(centeroidData);
                 }
 
                 if (tempData.geometry.type == "Point")
@@ -184,6 +199,27 @@ namespace TheDemiteServer
                     this.listMapData.listBuildingData.Add(buildingData);
                 }
             }
+        }
+
+        private float[] FindCenteroid(List<Coordinate> poly)
+        {
+            float accumulatedArea = 0.0f;
+            float centerX = 0.0f;
+            float centerY = 0.0f;
+
+            for (int i = 0, j = poly.Count - 1; i < poly.Count; j = i++)
+            {
+                float temp = poly[i].latitude + poly[j].longitude - poly[j].latitude * poly[i].longitude;
+                accumulatedArea += temp;
+                centerX += (poly[i].latitude + poly[j].latitude) * temp;
+                centerY += (poly[i].longitude + poly[j].longitude) * temp;
+            }
+
+            if (Math.Abs(accumulatedArea) < 1E-7f)
+                return null;
+
+            accumulatedArea *= 3f;
+            return new float[] { centerX / accumulatedArea, centerY / accumulatedArea };
         }
 
         private void ConvertRoadData(dynamic road)

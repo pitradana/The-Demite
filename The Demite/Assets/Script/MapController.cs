@@ -582,6 +582,7 @@ public class MapController : MonoBehaviour {
                     point2D.Add(new Vector2(latitude, longitude));
                 }
 
+                this.CreatePolygon(point2D.ToArray(), point.ToArray(), Color.green, "MapObject", "building");
                 point.Clear();
                 point2D.Clear();
             }
