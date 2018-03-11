@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2017
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "The Demite", "The Demite.csproj", "{CEB7DDEB-82B4-B352-D993-ED99B152D8B6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "The Demite.Plugins", "The Demite.Plugins.csproj", "{1365049B-992C-63A7-0164-DCA3D8CF068B}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "The Demite.Editor", "The Demite.Editor.csproj", "{1FAC9DCE-547C-DBA3-1DEF-0DCEC12077DD}"
 EndProject
 Global
@@ -15,6 +17,10 @@ Global
 		{CEB7DDEB-82B4-B352-D993-ED99B152D8B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEB7DDEB-82B4-B352-D993-ED99B152D8B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEB7DDEB-82B4-B352-D993-ED99B152D8B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1365049B-992C-63A7-0164-DCA3D8CF068B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1365049B-992C-63A7-0164-DCA3D8CF068B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1365049B-992C-63A7-0164-DCA3D8CF068B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1365049B-992C-63A7-0164-DCA3D8CF068B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1FAC9DCE-547C-DBA3-1DEF-0DCEC12077DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1FAC9DCE-547C-DBA3-1DEF-0DCEC12077DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FAC9DCE-547C-DBA3-1DEF-0DCEC12077DD}.Release|Any CPU.ActiveCfg = Release|Any CPU

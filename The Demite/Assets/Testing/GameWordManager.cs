@@ -6,11 +6,14 @@ using UnityEngine.UI;
 
 public class GameWordManager : MonoBehaviour {
 
-    public Question[] question;
+    public Question[] word;
     private static List<Question> unansweredQuestion;
 
     public Question currentQuestion;
 
+    GameObject pocong;
+    public Text kataVoice;
+    
     [SerializeField]
     private Text fact;
 
@@ -19,8 +22,11 @@ public class GameWordManager : MonoBehaviour {
     {
 	    if (unansweredQuestion == null || unansweredQuestion.Count == 0)
         {
-            unansweredQuestion = question.ToList<Question>();
+            unansweredQuestion = word.ToList<Question>();
         }
+
+        pocong = GameObject.FindGameObjectWithTag("pocong");
+        //kataVoice = GameObject.Find("Textv").GetComponent<Text>();
 
         SetRandomQuestion();
         //Debug.Log(currentQuestion.fact + " = " + currentQuestion.isTrue);
@@ -38,8 +44,11 @@ public class GameWordManager : MonoBehaviour {
 
     public void UserSelectTrue()
     {
-        if(currentQuestion.isTrue)
+        //string voice = kataVoice.text.ToString();
+
+        if(fact.text == kataVoice.text)
         {
+            Destroy(pocong);
             Debug.Log("BENAR COY!");
         }
         else
@@ -50,13 +59,19 @@ public class GameWordManager : MonoBehaviour {
 
     public void UserSelectFalse()
     {
-        if (!currentQuestion.isTrue)
+        
+        //kataVoice.text = "catch";
+        Debug.Log("catch");
+
+        pocong.SetActive(true);
+    }
+
+    void Update()
+    {
+        if (fact.text == kataVoice.text)
         {
+            Destroy(pocong);
             Debug.Log("BENAR COY!");
-        }
-        else
-        {
-            Debug.Log("SALAH BRO!");
         }
     }
 }

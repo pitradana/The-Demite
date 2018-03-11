@@ -6,6 +6,7 @@ TagManager:
   tags:
   - MapObject
   - inventory_tag
+  - pocong
   layers:
   - Default
   - TransparentFX
