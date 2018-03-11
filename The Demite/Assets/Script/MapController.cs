@@ -566,7 +566,7 @@ public class MapController : MonoBehaviour {
                     this.ShowName(new Vector3((float)coordinate["latitude"], 12f, (float)coordinate["longitude"]), new Vector3(), buildingName, "MapObject", "buildingName", Color.green);
 
                     this.ShowGhost(new Vector3((float)coordinate["latitude"], 10f, (float)coordinate["longitude"]), buildingName, "buildingName");
-
+                    //Debug.Log();
                     petObject.transform.position = new Vector3((float)coordinate["latitude"], 12f, (float)coordinate["longitude"]);
                     Debug.Log("pocong = " + petObject.transform.position);
                 }

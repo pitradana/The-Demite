@@ -291,6 +291,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="The Demite.Plugins.csproj">
+      <Project>{1365049B-992C-63A7-0164-DCA3D8CF068B}</Project>
+      <Name>The Demite.Plugins</Name>
+    </ProjectReference>
     <ProjectReference Include="The Demite.csproj">
       <Project>{CEB7DDEB-82B4-B352-D993-ED99B152D8B6}</Project>
       <Name>The Demite</Name>
@@ -299,6 +303,10 @@
   <ItemGroup>
     <Compile Include="Assets\CymaticLabs\Amqp\Editor\AmqpClientEditor.cs" />
     <Compile Include="Assets\CymaticLabs\Amqp\Editor\AmqpConfigurationEditor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
+    <None Include="Assets\Takohi\Android-Speech-Recognizer-Plugin-Read-Me.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
