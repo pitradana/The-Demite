@@ -64,8 +64,7 @@ public class MapController : MonoBehaviour {
 
         posText = GameObject.Find("PosText").GetComponent<Text>();
 
-        //this.InitDefaultProperties();
-        this.StartGPS();
+        this.InitDefaultProperties();
         this.UpdateGpsAndSendRequest();
     }
 	
@@ -84,8 +83,8 @@ public class MapController : MonoBehaviour {
     {
         this.uniqueId = Guid.NewGuid().ToString();
         this.playerName = "pitradana"; // PlayerPrefs.GetString("username");
-        this.latitude = -6.915108f; //-6.915108f;
-        this.longitude = 107.607206f; //107.607206f;
+        this.latitude = -6.915108f;
+        this.longitude = 107.607206f;
         this.lastLatitude = float.MinValue;
         this.lastLongitude = float.MinValue;
         this.petName = "pocong"; // PlayerPrefs.GetString("petName");
@@ -143,6 +142,8 @@ public class MapController : MonoBehaviour {
 
     void UpdateGpsAndSendRequest()
     {
+        //this.latitude = Input.location.lastData.latitude;
+        //this.longitude = Input.location.lastData.longitude;
         posText.text = "lat= " + this.latitude + " --- Long=" + this.longitude;
 
         if (this.lastLatitude != this.latitude || this.lastLongitude != this.longitude)
@@ -214,7 +215,6 @@ public class MapController : MonoBehaviour {
                     }
 
                     Vector3 tempCamPos = this.mainCam.transform.position;
-                    //this.mainCam.transform.parent.position = new Vector3(500,40,500);
                     this.mainCam.transform.parent.position = new Vector3((float)msg["playerPosX"], tempCamPos.y, (float)msg["playerPosY"]);
 
                     if (firstPet)
@@ -252,32 +252,11 @@ public class MapController : MonoBehaviour {
 
                     if ((int)msg["result"] == 1)
                     {
-                        Debug.Log("MASUK RESULT 1");
-
-                        //GameObject cameraController = GameObject.Find("Main Camera");
-                        //var cameraScript = cameraController.GetComponent<CameraController>();
-
-                        //cameraScript.webcamTexture.Stop();
-                        
-                        Debug.Log("PINDAH SCENE");
-
                         Time.timeScale = 1;
                         SceneManager.LoadScene("MainScene");
-                        
                     }
                 }
-
-                /*
-                if (responseType == "listplayer")
-                {
-                    //Debug.Log("listplayer");
-                    UpdateOthersPosition(msg["unityPlayerPos"]);
-
-                    //AmqpController.amqpControl.msg = null;
-                }
-                */
             }
-
             
             if ((string)msg["type"] == "listplayer")
             {
@@ -287,11 +266,8 @@ public class MapController : MonoBehaviour {
                     RemoveOtherFromList(msg["unityPlayerPos"]);
                     UpdateOthersPosition(msg["unityPlayerPos"]);
                 }
-
-                //AmqpController.amqpControl.msg = null;
             }
-        }
-        
+        } 
     }
 
     void RemoveOtherFromList(CymaticLabs.Unity3D.Amqp.SimpleJSON.JSONNode data )
@@ -374,8 +350,15 @@ public class MapController : MonoBehaviour {
             float otherGhostLastPosY = (float)data[i]["petLastPosY"];
 
             string otherStartTImeMoveString = (string)data[i]["timeStartMove"];
-            long otherStartTimeMove = Convert.ToInt64(otherStartTImeMoveString);
+            long otherStartTimeMove = 0L;
+
+            if (otherStartTImeMoveString != "")
+            {
+                otherStartTimeMove = Convert.ToInt64(otherStartTImeMoveString);
+            }
+
             string otherGhostState = (string)data[i]["petState"];
+            float otherPetSpeed = (float)data[i]["petSpeed"];
 
             Debug.Log("main player = " + this.playerName);
             Debug.Log("other player = " + otherUsername);
@@ -401,14 +384,21 @@ public class MapController : MonoBehaviour {
                     Vector3 mapGhostLastPos = new Vector3(mapGhostLastPosX, 0.0f, mapGhostLastPosY);
                     Vector3 mapGhostPos = new Vector3(mapGhostPosX, 0.0f, mapGhostPosX);
                     float totalDistance = Vector3.Distance(mapGhostLastPos, mapGhostPos);
+                    float distanceTraveled = 0.0f;
 
-                    double seconds = (DateTime.Now - new DateTime(otherStartTimeMove)).TotalSeconds;
-                    Debug.Log(seconds);
-                    float distanceTraveled = (float)(seconds * 1f);
+                    //double seconds = (DateTime.Now - new DateTime(otherStartTimeMove)).TotalSeconds;
+                    //Debug.Log(seconds);
+                    //float distanceTraveled = (float)(seconds * 1f);
+
+                    if (otherStartTimeMove != 0L)
+                    {
+                        double seconds = (DateTime.Now - new DateTime(otherStartTimeMove)).TotalSeconds;
+                        distanceTraveled = (float)(seconds * otherPetSpeed);
+                    }
 
                     Debug.Log(distanceTraveled + " --- distance traveled");
                     Debug.Log(totalDistance + " --- total distance");
-                    Debug.Log(seconds + "  --- time seconds");
+                    //Debug.Log(seconds + "  --- time seconds");
 
                     Vector3 predictedPos;
 
@@ -432,11 +422,13 @@ public class MapController : MonoBehaviour {
                         newOtherPlayer.petToPosY = mapGhostPosY;
                     }
 
+                    newOtherPlayer.petSpeed = otherPetSpeed;
+
                     otherPlayerDataList.Add(newOtherPlayer);
 
                     //jika belum ada nama pet
                     GameObject newGhostObject = Instantiate(Resources.Load("PetPrefab")) as GameObject;
-                    newGhostObject.name = otherUsername + "_" + otherGhostName;
+                    newGhostObject.name = "pet_" + otherGhostName;
                     newGhostObject.transform.position = new Vector3(predictedPos.x, 0.0f, predictedPos.z);
 
                     GameObject namaGhost = newGhostObject.transform.Find("PetNameText").gameObject;
@@ -473,6 +465,7 @@ public class MapController : MonoBehaviour {
                     other.petToPosX = otherGhostPosX - this.centerPosX;
                     other.petToPosY = otherGhostPosY - this.centerPosY;
                     other.petState = otherGhostState;
+                    other.petSpeed = otherPetSpeed;
 
                     if(other.petState == "walkFood")
                     {
@@ -566,10 +559,10 @@ public class MapController : MonoBehaviour {
                     var coordinate = tempData["listCoordinate"][0];                  
                     this.ShowName(new Vector3((float)coordinate["latitude"], 12f, (float)coordinate["longitude"]), new Vector3(), buildingName, "MapObject", "buildingName", Color.green);
 
-                    this.ShowGhost(new Vector3((float)coordinate["latitude"], 10f, (float)coordinate["longitude"]), buildingName, "buildingName");
+                    //this.ShowGhost(new Vector3((float)coordinate["latitude"], 10f, (float)coordinate["longitude"]), buildingName, "buildingName");
                     //Debug.Log();
-                    petObject.transform.position = new Vector3((float)coordinate["latitude"], 12f, (float)coordinate["longitude"]);
-                    Debug.Log("pocong = " + petObject.transform.position);
+                    //petObject.transform.position = new Vector3((float)coordinate["latitude"], 12f, (float)coordinate["longitude"]);
+                    //Debug.Log("pocong = " + petObject.transform.position);
                 }
             }
             else
@@ -583,7 +576,7 @@ public class MapController : MonoBehaviour {
                     point2D.Add(new Vector2(latitude, longitude));
                 }
 
-                this.CreatePolygon(point2D.ToArray(), point.ToArray(), Color.green, "MapObject", "building");
+                //this.CreatePolygon(point2D.ToArray(), point.ToArray(), Color.green, "MapObject", "building");
                 point.Clear();
                 point2D.Clear();
             }
@@ -624,7 +617,7 @@ public class MapController : MonoBehaviour {
 
             for (int m = 0; m < tempVector.Length - 1; m++)
             {
-                CreateRoadWaterMesh(tempVector[m], tempVector[m + 1], 2.0f, "MapObject", Color.red, "road");
+                //CreateRoadWaterMesh(tempVector[m], tempVector[m + 1], 2.0f, "MapObject", Color.red, "road");
 
                 Vector3 tempNamePost = Vector3.Lerp(tempVector[m], tempVector[m + 1], 0.5f);
                 float tempDistance = Vector3.Distance(this.mainCam.transform.parent.position, tempNamePost);
@@ -723,9 +716,6 @@ public class MapController : MonoBehaviour {
         text.alignment = TextAlignment.Center;
         Font font = Resources.Load<Font>("Font/SHADSER");
         text.font = font;
-
-        GameObject pocong = GameObject.Find("Pocong");
-
         var mr = text.GetComponent<Renderer>();
         mr.material = font.material;
 
@@ -856,5 +846,6 @@ public class MapController : MonoBehaviour {
         public float petFromPosX;
         public float petFromPosY;
         public string petState;
+        public float petSpeed;
     }
 }

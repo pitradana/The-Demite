@@ -13,11 +13,9 @@ namespace TheDemiteServer
     {
         private string format = "geojson";                                                                                 // format data of mapzen vector tile
         private string url = "http://167.205.7.235:8080/geoserver/gwc/service/tms/1.0.0/mapproject%3Abdg_planet_osm_roads@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
-
+        private string urlLine = "http://167.205.7.235:8080/geoserver/gwc/service/tms/1.0.0/mapproject%3Abdg_planet_osm_line@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
         private string urlPolygon = "http://167.205.7.235:8080/geoserver/gwc/service/tms/1.0.0/mapproject%3Abandung_planet_osm_polygon@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
         private string urlPoint = "http://167.205.7.235:8080/geoserver/gwc/service/tms/1.0.0/mapproject%3Abdg_planet_osm_point@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
-        private string mapzenApiKey = "mapzen-KhT9o6J";                                                                 // mapzen api key. get the api key by sign up to mapzen
-        //private string mapzenUrl = "http://tile.mapzen.com/mapzen/vector/v1/{0}/{1}/{2}/{3}.{4}?api_key={5}";           // mapzen vector tile url. 0 => layers, 1 => zoom level, 2 => x tile coordinate, 3 => y tile coordinate, 4 => vector tile data format, 5 => mapzen api key
         private int zoom = 18;
 
         private float centerMercatorX;
@@ -103,7 +101,12 @@ namespace TheDemiteServer
             //access road
             string urlRequest = string.Format(url, zoom.ToString(), tileX.ToString(), tileY.ToString(), format);
             dynamic mapData = await this.ProcessMapData(urlRequest);
-            this.ConvertRoadData(mapData);
+            this.ConvertRoadData(mapData, "road");
+
+            //access small road
+            urlRequest = string.Format(urlLine, zoom.ToString(), tileX.ToString(), tileY.ToString(), format);
+            mapData = await this.ProcessMapData(urlRequest);
+            this.ConvertRoadData(mapData, "line");
 
             //access polygon
             urlRequest = string.Format(urlPolygon, zoom.ToString(), tileX.ToString(), tileY.ToString(), format);
@@ -122,11 +125,9 @@ namespace TheDemiteServer
         {
             var response = await this.http.GetAsync(url);
             var result = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(result);
             dynamic mapData = JsonConvert.DeserializeObject(result);
 
             return mapData;
-            //return null;
         }
 
         private void ConvertBuildingData(dynamic building)
@@ -216,15 +217,18 @@ namespace TheDemiteServer
             }
 
             if (Math.Abs(accumulatedArea) < 1E-7f)
-                return null;
+                return null; //avoid division by zero
 
             accumulatedArea *= 3f;
             return new float[] { centerX / accumulatedArea, centerY / accumulatedArea };
         }
 
-        private void ConvertRoadData(dynamic road)
+        private void ConvertRoadData(dynamic road, string type)
         {
-            this.listMapData.listRoadData.Clear();
+            if(type == "road")
+            {
+                this.listMapData.listRoadData.Clear();
+            }
 
             for (int i = 0; i < road.features.Count; i++)
             {
@@ -242,13 +246,14 @@ namespace TheDemiteServer
                         float tempX = mercator[0] - this.centerMercatorX;
                         float tempY = mercator[1] - this.centerMercatorY;
                         */
-                        Console.WriteLine(coordinate[0] + " ===latitude=== " + this.centerMercatorX);
-                        Console.WriteLine(coordinate[1] + " ===longitude=== " + this.centerMercatorY);
+                        //Console.WriteLine(coordinate[0] + " ===latitude=== " + this.centerMercatorX);
+                        //Console.WriteLine(coordinate[1] + " ===longitude=== " + this.centerMercatorY);
                         float tempX = (float)Convert.ToDouble(coordinate[0]) - this.centerMercatorX;
                         float tempY = (float)Convert.ToDouble(coordinate[1]) - this.centerMercatorY;
-                        Console.WriteLine(tempX + " ======= " + tempY);
+                        //Console.WriteLine(tempX + " ======= " + tempY);
                         //coordinate[1] = tempX;
                         //coordinate[0] = tempY;
+
                         Coordinate coor = new Coordinate();
                         coor.latitude = tempX;
                         coor.longitude = tempY;
@@ -276,7 +281,8 @@ namespace TheDemiteServer
                 buildingData.listCoordinate = new List<Coordinate>();
 
                 var coordinate = tempData.geometry.coordinates;
-                float[] mercator = GeoConverter.GeoCoorToMercatorProjection((float)coordinate[1], (float)coordinate[0]);
+                //float[] mercator = GeoConverter.GeoCoorToMercatorProjection((float)coordinate[1], (float)coordinate[0]);
+                
                 /*
                 float tempX = mercator[0] - this.centerMercatorX;
                 float tempY = mercator[1] - this.centerMercatorY;
@@ -299,7 +305,7 @@ namespace TheDemiteServer
 
         public List<Coordinate> StartRoute(float latitude, float longitude, string destination)
         {
-            RouteManagement route = new RouteManagement(this.centerMercatorX, this.centerMercatorY, latitude, longitude, this.mapzenApiKey, this.http);
+            RouteManagement route = new RouteManagement(this.centerMercatorX, this.centerMercatorY, latitude, longitude, this.http);
             route.StartRouting(destination);
 
             while (!route.GetRoutingDone()) ;

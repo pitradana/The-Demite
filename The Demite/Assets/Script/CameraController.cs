@@ -9,7 +9,7 @@ public class CameraController : MonoBehaviour {
     //private GameObject plane;
     private Quaternion rotationQua;
     //private WebCamTexture webcamTexture;
-    public float maxRayDistance = 1000f;
+    public float maxRayDistance = 100f;
     //public bool canHover = false;
     public Text ahh;
 
@@ -80,16 +80,8 @@ public class CameraController : MonoBehaviour {
 
         if (Physics.Raycast(ray, out hit, maxRayDistance))
         {
-            //if (hit.distance <= 10.0 && hit.collider.gameObject.tag == "pocong" )
-            //{
-            //    Debug.Log("YES");
-            //}
-            //if(hit.collider.)
             Debug.DrawLine(hit.point, hit.point + transform.up * 10, Color.green);
-            //Debug.Log("jancuk");
             ahh.text = "AH yes";
-            //if (hit.collider == )
-            //canHover = true;
         }
         else
         {
@@ -101,7 +93,7 @@ public class CameraController : MonoBehaviour {
         {
             ResetGyroRotation();
         }
-        transform.localRotation = gyro.attitude * rotFix;
+        //transform.localRotation = gyro.attitude * rotFix;
     }
 
     void ResetGyroRotation()

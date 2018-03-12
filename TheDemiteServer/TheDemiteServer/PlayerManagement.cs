@@ -144,18 +144,14 @@ namespace TheDemiteServer
             return route;
         }
 
-        public List<UnityPlayerPetPosition> GetOthers(dynamic data)
+        public List<UnityPlayerPetPosition> GetOthers(int tileX, int tileY)
         {
             listPlayerPos.Clear();
             for (int i = 0; i < listPlayer.Count; i++)
             {
                 Player player = listPlayer.ElementAt<Player>(i);
 
-                //Console.WriteLine("player name = "+player.GetPlayerName());
-                //Console.WriteLine("player X = "+ player.GetMapController().GetTileX()+" ;;;; data X = "+ (int)data.tileX);
-                //Console.WriteLine("player Y = " + player.GetMapController().GetTileY() + " ;;;; data Y = " + (int)data.tileY);
-
-                if (player.GetMapController().GetTileX() == (int)data.tileX && player.GetMapController().GetTileY() == (int)data.tileY)
+                if (player.GetMapController().GetTileX() == tileX && player.GetMapController().GetTileY() == tileY)
                 {
                     if (player.GetIsActive())
                     {
@@ -172,6 +168,8 @@ namespace TheDemiteServer
                         playerInList.petLastPosY = player.GetPet().GetLastPosY();
                         playerInList.timeStartMove = player.GetPet().GetTimeStartMove();
                         playerInList.petState = player.GetPet().GetPetState();
+                        //playerInList.ballState = player.GetPet().GetBallState();
+                        //playerInList.petSpeed = player.GetPet().GetSpeed();
 
                         listPlayerPos.Add(playerInList);
                     }
@@ -206,6 +204,8 @@ namespace TheDemiteServer
                 curPlayer.GetPet().SetPosY((float)data.petPosY + curPlayer.GetMapController().GetCenterPosY());
 
                 curPlayer.GetPet().SetPetState((string)data.petState);
+
+                curPlayer.GetPet().SetSpeed((float)data.speed);
                 // tambahan
                 //GetListMember(curPlayer.GetPlayerName());
             }

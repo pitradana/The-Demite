@@ -15,6 +15,7 @@ namespace TheDemiteServer
         private float lastPosY;
         private string timeStartMove;
         private string petState;
+        private float speed;
 
         public Ghost(string petName, float posX, float posY)
         {
@@ -25,6 +26,7 @@ namespace TheDemiteServer
             this.lastPosY = 0f;
             this.timeStartMove = "";
             this.petState = "";
+            this.speed = 0.0f;
         }
 
         public void SetPetName(string petName)
@@ -90,6 +92,16 @@ namespace TheDemiteServer
         public void SetPetState(string petState)
         {
             this.petState = petState;
+        }
+
+        public void SetSpeed(float speed)
+        {
+            this.speed = speed;
+        }
+
+        public float GetSpeed()
+        {
+            return this.speed;
         }
 
         public string GetPetState()

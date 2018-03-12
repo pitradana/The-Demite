@@ -13,7 +13,6 @@ namespace TheDemiteServer
         private HttpClient httpClient;
         private string searchUrl;
         private string routeUrl;
-        private string mapzenApiKey;
 
         private float centerMercatorX;
         private float centerMercatorY;
@@ -24,12 +23,11 @@ namespace TheDemiteServer
 
         private bool routingDone;
 
-        public RouteManagement(float centerMercatorX, float centerMercatorY, float latitude, float longitude, string mapzenKey, HttpClient httpClient)
+        public RouteManagement(float centerMercatorX, float centerMercatorY, float latitude, float longitude, HttpClient httpClient)
         {
             this.httpClient = httpClient;
-            this.searchUrl = "http://search.mapzen.com/v1/search?text={0}&api_key={1}";
-            this.routeUrl = "http://valhalla.mapzen.com/route?json={0}&api_key={1}";
-            this.mapzenApiKey = mapzenKey;
+            this.searchUrl = "https://api.opencagedata.com/geocode/v1/json?q={0}&key=2393494991af4eaf9866f28fbd3d739e";
+            this.routeUrl = "http://osrm.pptik.id/route/v1/driving/{0}?alternatives=false&overview=full&steps=true";
 
             this.centerMercatorX = centerMercatorX;
             this.centerMercatorY = centerMercatorY;
@@ -49,7 +47,7 @@ namespace TheDemiteServer
         private async void SearchRoute(string routeDestination)
         {
             string destUpdate = routeDestination.Replace(" ", "%20");
-            string url = string.Format(searchUrl, destUpdate, mapzenApiKey);
+            string url = string.Format(searchUrl, destUpdate);
             dynamic searchData = null;
             try
             {
@@ -60,36 +58,21 @@ namespace TheDemiteServer
                 Console.WriteLine(e.InnerException.Message);
             }
 
-            if (searchData.features != null)
+            if (searchData.result != null)
             {
-                int pos = -1;
-                for (int i = 0; i < searchData.features.Count; i++)
+                var coordinate = searchData.results[0].geometry;
+                float latitudeSearch = (float)Convert.ToDouble(coordinate["lat"]);
+                float longitudeSearch = (float)Convert.ToDouble(coordinate["lng"]);
+
+                string json = this.longitude + "%2C" + this.latitude + "%3B" + longitudeSearch + "%2C" + latitudeSearch;
+                string url2 = string.Format(routeUrl, json);
+                dynamic routeData = await this.ProcessData(url2);
+
+                if (routeData != null)
                 {
-                    string name = (string)searchData.features[i].properties.name;
-                    if (name.ToLower() == routeDestination.ToLower())
-                    {
-                        pos = i;
-                        break;
-                    }
-                }
-
-                if (pos != -1)
-                {
-                    var coordinate = searchData.features[0].geometry.coordinates;
-                    float latitudeSearch = (float)Convert.ToDouble(coordinate[1]);
-                    float longitudeSearch = (float)Convert.ToDouble(coordinate[0]);
-
-                    string json = "{\"locations\":[{\"lat\":" + latitude + ",\"lon\":" + longitude + ",\"type\":\"break\"},{\"lat\":" + latitudeSearch + ",\"lon\":" + longitudeSearch + ",\"type\":\"break\"}],\"costing\":\"auto\"}";
-                    string url2 = string.Format(routeUrl, json, mapzenApiKey);
-                    dynamic routeData = await this.ProcessData(url2);
-
-                    if (routeData.trip != null)
-                    {
-                        this.ProcessRouteData(routeData);
-                    }
+                    this.ProcessRouteData(routeData);
                 }
             }
-
             this.routingDone = true;
         }
 
