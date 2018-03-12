@@ -11,12 +11,23 @@ public class SpeechRecognizerDemoSceneManager : MonoBehaviour
     public Text ftext;
     //public string t;
     public float maxRayDistance = 100;
-    public bool canHover = false;
+
+    public GameObject CameraControlObject;
+    private CameraController AccesControl;
+    private bool OnOver;
+
+
+    
+  
+
 
 	#region MONOBEHAVIOUR
 	
 	void Start ()
 	{
+
+        AccesControl = CameraControlObject.GetComponent<CameraController>();
+        
 		if (Application.platform != RuntimePlatform.Android) {
 			Debug.Log ("Speech recognition is only available on Android platform.");
 			return;
@@ -33,23 +44,52 @@ public class SpeechRecognizerDemoSceneManager : MonoBehaviour
 
     void Update()
     {
-        Ray ray = new Ray(transform.position, Vector3.left);
-        RaycastHit hit;
+        OnOver = AccesControl.canOver;
+        tombolMulai();
+        Debug.Log(OnOver);
+        //    Ray ray = new Ray(transform.position, transform.forward);
+        //    RaycastHit hit;
 
-        Debug.DrawLine(transform.position, transform.position + Vector3.left * maxRayDistance, Color.red);
+        //    Debug.DrawLine(transform.position, transform.position + transform.forward * maxRayDistance, Color.red);
 
-        if (Physics.Raycast(ray, out hit, maxRayDistance))
-        {
-            //if (hit.collider == )
-            canHover = true;
-            
-            _isListening = true;
-            _speechManager.StartListening(1, "en-US");
-            ah.text = "kena";
-        }
+        //    if (Physics.Raycast(ray, out hit, maxRayDistance))
+        //    {
+        //        //if (hit.distance <= 10.0 && hit.collider.gameObject.tag == "pocong" )
+        //        //{
+        //        //    Debug.Log("YES");
+        //        //}
+        //        //if(hit.collider.)
+        //        canOver = true;
+
+        //        Debug.DrawLine(hit.point, hit.point + transform.up * 10, Color.green);
+        //        //Debug.Log("jancuk");
+        //        //ahh.text = "AH yes";
+        //        //if (hit.collider == )
+        //        //canHover = true;
+        //    }
+        //    else
+        //    {
+        //        canOver = false;
+
+        //        Debug.Log("tidak kena");
+        //        //ahh.text = "tidak dapat";
+        //    }
+        //}
+
+        //private void OnGUI()
+        //{
+        //    if (canOver == true)
+        //    {
+        //        tombolMulai();
+        //        GUI.Box(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 100, 150, 20), ftext.text);
+
+        //    }
     }
 
-	void OnDestroy ()
+
+
+
+    void OnDestroy ()
 	{
 		if (_speechManager != null)
 			_speechManager.Release ();
@@ -203,14 +243,21 @@ public class SpeechRecognizerDemoSceneManager : MonoBehaviour
     
     public void tombolMulai()
     {
-        _isListening = true;
-        _speechManager.StartListening(1, "en-US");
+        if (OnOver == true && !_isListening)
+        {
+         _isListening = true;
+         _speechManager.StartListening(1, "en-US");
+        }
+       
     }
 
     public void tombolBerhenti()
     {
-        _speechManager.StopListening();
-        _isListening = false;
+        if (OnOver == false)
+        {
+            _speechManager.StopListening();
+            _isListening = false;
+        }
     }
     
 }

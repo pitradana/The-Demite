@@ -600,6 +600,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxRayDistance: 100
   ahh: {fileID: 1823628723}
+  canOver: 0
   worldObject: {fileID: 1889773309}
   zoomObj: {fileID: 1889773309}
 --- !u!20 &550458004

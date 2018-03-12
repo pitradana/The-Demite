@@ -17,9 +17,17 @@ public class CameraController : MonoBehaviour {
     private bool gyroSupported;
     private Quaternion rotFix;
 
+    public bool canOver = false;
+    
+    
+    
+
+    //gameObject.GetComponent<move>().speed
+
     [SerializeField]
     private Transform worldObject;
     private float startY;
+    
 
     [SerializeField]
     private Transform zoomObj;
@@ -52,6 +60,8 @@ public class CameraController : MonoBehaviour {
 
         //webcamTexture.Play();
 
+        
+
         gyroSupported = SystemInfo.supportsGyroscope;
 
         GameObject camParent = new GameObject("camParent");
@@ -72,7 +82,7 @@ public class CameraController : MonoBehaviour {
     void Update()
     {
         //this.transform.localRotation = Quaternion.Slerp(this.transform.localRotation, Input.gyro.attitude * rotationQua, Time.deltaTime * 2.0f);
-
+        
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
 
@@ -80,19 +90,15 @@ public class CameraController : MonoBehaviour {
 
         if (Physics.Raycast(ray, out hit, maxRayDistance))
         {
-            //if (hit.distance <= 10.0 && hit.collider.gameObject.tag == "pocong" )
-            //{
-            //    Debug.Log("YES");
-            //}
-            //if(hit.collider.)
+            canOver = true;
             Debug.DrawLine(hit.point, hit.point + transform.up * 10, Color.green);
-            //Debug.Log("jancuk");
+            Debug.Log("kena");
             ahh.text = "AH yes";
-            //if (hit.collider == )
-            //canHover = true;
+           
         }
         else
         {
+            canOver = false;
             Debug.Log("tidak kena");
             ahh.text = "tidak dapat";
         }
@@ -103,6 +109,16 @@ public class CameraController : MonoBehaviour {
         }
         transform.localRotation = gyro.attitude * rotFix;
     }
+
+    
+
+    //private void OnGUI()
+    //{
+    //    if (canOver==true)
+    //    {
+    //        GUI.Box(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 100, 150, 20), "ilangin aku");
+    //    }
+    //}
 
     void ResetGyroRotation()
     {
