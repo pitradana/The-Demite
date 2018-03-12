@@ -330,6 +330,7 @@
     <Compile Include="Assets\Script\SplashscreenScript.cs" />
     <Compile Include="Assets\Script\Triangulator.cs" />
     <Compile Include="Assets\Takohi\Examples\AndroidSpeechRecognizerPlugin\SpeechRecognizerDemoSceneManager.cs" />
+    <Compile Include="Assets\Testing\CameraAsBackground.cs" />
     <Compile Include="Assets\Testing\GameWordManager.cs" />
     <Compile Include="Assets\Testing\GyroCamera.cs" />
     <Compile Include="Assets\Testing\PhoneCamera.cs" />
