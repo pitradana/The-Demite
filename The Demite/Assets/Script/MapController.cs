@@ -64,7 +64,8 @@ public class MapController : MonoBehaviour {
 
         posText = GameObject.Find("PosText").GetComponent<Text>();
 
-        this.InitDefaultProperties();
+        //this.InitDefaultProperties();
+        this.StartGPS();
         this.UpdateGpsAndSendRequest();
     }
 	
