@@ -18,5 +18,7 @@ namespace TheDemiteServer
         public float petLastPosY;
         public string timeStartMove;
         public string petState;
+        public string ballState;
+        public float petSpeed;
     }
 }

@@ -19,7 +19,6 @@ public class CameraAsBackground : MonoBehaviour
         cam = new WebCamTexture(Screen.width, Screen.height);
         image.texture = cam;
         cam.Play();
-
     }
 
     // Update is called once per frame

@@ -3323,7 +3323,7 @@ MonoBehaviour:
   ah: {fileID: 1823628723}
   ftext: {fileID: 785290181}
   maxRayDistance: 25
-  canHover: 0
+  CameraControlObject: {fileID: 550458000}
 --- !u!4 &1945983848
 Transform:
   m_ObjectHideFlags: 0
@@ -3673,7 +3673,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: f57c5e97a3f35bf4aa7d88c2c75b5c9e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 3.49
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: f57c5e97a3f35bf4aa7d88c2c75b5c9e, type: 3}
       propertyPath: m_LocalPosition.z

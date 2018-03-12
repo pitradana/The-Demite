@@ -215,7 +215,7 @@ namespace TheDemiteServer
 
                         if (msg["type"] == "map")
                         {
-                            Console.WriteLine(" [x] processing map request from {0} ", msg["id"]);
+                            Console.WriteLine(" [x] processing map request from {0} ", msg["playerName"]);
 
                             ResponseJson responseJson = new ResponseJson();
                             responseJson.id = msg["id"];
@@ -239,7 +239,28 @@ namespace TheDemiteServer
                                                  basicProperties: null,
                                                  body: newMessage);
 
-                            Console.WriteLine(" [x] map response sent to {0} ", msg["id"]);
+                            Console.WriteLine(" [x] map response sent to {0} ", msg["playerName"]);
+
+                            List<UnityPlayerPetPosition> unityPlayerPos = playerManagement.GetOthers(playerManagement.GetTileX(), playerManagement.GetTileY());
+                            UnityPlayerPetPosition curPlayer = unityPlayerPos.Find(x => x.playerName == (string)msg["playerName"]);
+                            curPlayer.petLastPosX += playerManagement.GetCenterPosX();
+                            curPlayer.petLastPosY += playerManagement.GetCenterPosY();
+                            curPlayer.petPosX += playerManagement.GetCenterPosX();
+                            curPlayer.petPosY += playerManagement.GetCenterPosY();
+
+                            ListPlayerResponseJson listPlayer = new ListPlayerResponseJson();
+                            listPlayer.unityPlayerPos = unityPlayerPos;
+                            listPlayer.type = "listplayer";
+                            listPlayer.tileX = playerManagement.GetTileX();
+                            listPlayer.tileY = playerManagement.GetTileY();
+
+                            var jsonString2 = JsonConvert.SerializeObject(listPlayer);
+
+                            var newMessage2 = Encoding.UTF8.GetBytes(jsonString2);
+                            channel.BasicPublish(exchange: "DigipetResponseExchange",
+                                                 routingKey: "DigipetResponseRoutingKey",
+                                                 basicProperties: null,
+                                                 body: newMessage2);
                         }
 
                         if (msg["type"] == "maptohome")
@@ -250,7 +271,7 @@ namespace TheDemiteServer
 
 
                             // send update to other user that user return home
-                            List<UnityPlayerPetPosition> unityPlayerPos = playerManagement.GetOthers(msg);
+                            List<UnityPlayerPetPosition> unityPlayerPos = playerManagement.GetOthers((int)msg["tileX"], (int)msg["tileY"]);
 
                             ListPlayerResponseJson listPlayer = new ListPlayerResponseJson();
                             listPlayer.unityPlayerPos = unityPlayerPos;
@@ -359,7 +380,7 @@ namespace TheDemiteServer
                             Console.WriteLine(" [x] processing list player request from {0} ", msg["username"]);
 
                             playerManagement.UpdatePetLocation(msg);
-                            List<UnityPlayerPetPosition> unityPlayerPos = playerManagement.GetOthers(msg);
+                            List<UnityPlayerPetPosition> unityPlayerPos = playerManagement.GetOthers((int)msg["tileX"], (int)msg["tileY"]);
 
                             ListPlayerResponseJson listPlayer = new ListPlayerResponseJson();
                             listPlayer.unityPlayerPos = unityPlayerPos;
