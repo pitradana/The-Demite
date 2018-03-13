@@ -1,6 +1,6 @@
 ﻿[System.Serializable]
-public class Question {
+public class Word {
 
     public string fact;
-    public bool isTrue;
+    //public bool isTrue;
 }

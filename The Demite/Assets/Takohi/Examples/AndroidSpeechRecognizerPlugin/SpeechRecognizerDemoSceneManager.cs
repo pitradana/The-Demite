@@ -9,17 +9,10 @@ public class SpeechRecognizerDemoSceneManager : MonoBehaviour
 	private string _message = "";
     public Text ah;
     public Text ftext;
-    //public string t;
-    public float maxRayDistance = 100;
 
     public GameObject CameraControlObject;
     private CameraController AccesControl;
     private bool OnOver;
-
-
-    
-  
-
 
 	#region MONOBEHAVIOUR
 	
@@ -44,50 +37,10 @@ public class SpeechRecognizerDemoSceneManager : MonoBehaviour
 
     void Update()
     {
-        OnOver = AccesControl.canOver;
-        tombolMulai();
+        //OnOver = AccesControl.canOver;
+        //tombolMulai();
         Debug.Log(OnOver);
-        //    Ray ray = new Ray(transform.position, transform.forward);
-        //    RaycastHit hit;
-
-        //    Debug.DrawLine(transform.position, transform.position + transform.forward * maxRayDistance, Color.red);
-
-        //    if (Physics.Raycast(ray, out hit, maxRayDistance))
-        //    {
-        //        //if (hit.distance <= 10.0 && hit.collider.gameObject.tag == "pocong" )
-        //        //{
-        //        //    Debug.Log("YES");
-        //        //}
-        //        //if(hit.collider.)
-        //        canOver = true;
-
-        //        Debug.DrawLine(hit.point, hit.point + transform.up * 10, Color.green);
-        //        //Debug.Log("jancuk");
-        //        //ahh.text = "AH yes";
-        //        //if (hit.collider == )
-        //        //canHover = true;
-        //    }
-        //    else
-        //    {
-        //        canOver = false;
-
-        //        Debug.Log("tidak kena");
-        //        //ahh.text = "tidak dapat";
-        //    }
-        //}
-
-        //private void OnGUI()
-        //{
-        //    if (canOver == true)
-        //    {
-        //        tombolMulai();
-        //        GUI.Box(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 100, 150, 20), ftext.text);
-
-        //    }
     }
-
-
-
 
     void OnDestroy ()
 	{
@@ -125,7 +78,6 @@ public class SpeechRecognizerDemoSceneManager : MonoBehaviour
 		DebugLog ("Speech results:\n   " + string.Join ("\n   ", texts));
         ftext.text = string.Join("", texts);
         //t = texts[];
-
 	}
 
 	void OnSpeechError (string error)

@@ -64,7 +64,8 @@ public class MapController : MonoBehaviour {
 
         posText = GameObject.Find("PosText").GetComponent<Text>();
 
-        this.InitDefaultProperties();
+        //this.InitDefaultProperties();
+        StartCoroutine(StartGPS());
         this.UpdateGpsAndSendRequest();
     }
 	
@@ -76,7 +77,7 @@ public class MapController : MonoBehaviour {
             this.UpdateGpsAndSendRequest();
         }
 
-        OtherPetMovement();
+        //OtherPetMovement();
     }
 
     void InitDefaultProperties()
@@ -142,8 +143,8 @@ public class MapController : MonoBehaviour {
 
     void UpdateGpsAndSendRequest()
     {
-        //this.latitude = Input.location.lastData.latitude;
-        //this.longitude = Input.location.lastData.longitude;
+        this.latitude = Input.location.lastData.latitude;
+        this.longitude = Input.location.lastData.longitude;
         posText.text = "lat= " + this.latitude + " --- Long=" + this.longitude;
 
         if (this.lastLatitude != this.latitude || this.lastLongitude != this.longitude)

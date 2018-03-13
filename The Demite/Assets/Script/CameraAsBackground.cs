@@ -13,7 +13,7 @@ public class CameraAsBackground : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        //arf = GetComponent<AspectRatioFitter>();
+        arf = GetComponent<AspectRatioFitter>();
 
         image = GetComponent<RawImage>();
         cam = new WebCamTexture(Screen.width, Screen.height);
