@@ -59,13 +59,13 @@ public class MapController : MonoBehaviour {
         mainCam = GameObject.FindGameObjectWithTag("MainCamera");
         petObject = GameObject.Find("Cube");
 
-        routeObject = GameObject.Find("RouteButton");
-        routeObject.GetComponent<Button>().onClick.AddListener(StartRouting);
+        //routeObject = GameObject.Find("RouteButton");
+        //routeObject.GetComponent<Button>().onClick.AddListener(StartRouting);
 
-        posText = GameObject.Find("PosText").GetComponent<Text>();
+        //posText = GameObject.Find("PosText").GetComponent<Text>();
 
-        //this.InitDefaultProperties();
-        StartCoroutine(StartGPS());
+        this.InitDefaultProperties();
+        //StartCoroutine(StartGPS());
         this.UpdateGpsAndSendRequest();
     }
 	
@@ -143,9 +143,9 @@ public class MapController : MonoBehaviour {
 
     void UpdateGpsAndSendRequest()
     {
-        this.latitude = Input.location.lastData.latitude;
-        this.longitude = Input.location.lastData.longitude;
-        posText.text = "lat= " + this.latitude + " --- Long=" + this.longitude;
+        //this.latitude = Input.location.lastData.latitude;
+        //this.longitude = Input.location.lastData.longitude;
+        //posText.text = "lat= " + this.latitude + " --- Long=" + this.longitude;
 
         if (this.lastLatitude != this.latitude || this.lastLongitude != this.longitude)
         {
@@ -161,14 +161,14 @@ public class MapController : MonoBehaviour {
         }
     }
 
-    void StartRouting()
-    {
-        GameObject textObject = GameObject.Find("DestinationFIeld");
-        string destination = textObject.GetComponent<InputField>().text;
+    //void StartRouting()
+    //{
+    //    GameObject textObject = GameObject.Find("DestinationFIeld");
+    //    string destination = textObject.GetComponent<InputField>().text;
 
-        string routeRequestJson = this.CreateRouteJsonMessage("route", destination);
-        AmqpClient.Publish(AmqpControllerScript.amqpControl.requestExchange, AmqpControllerScript.amqpControl.requestRoutingKey, routeRequestJson);
-    }
+    //    string routeRequestJson = this.CreateRouteJsonMessage("route", destination);
+    //    AmqpClient.Publish(AmqpControllerScript.amqpControl.requestExchange, AmqpControllerScript.amqpControl.requestRoutingKey, routeRequestJson);
+    //}
 
     void CheckAndProcessResponse(AmqpExchangeReceivedMessage received)
     {
@@ -728,11 +728,7 @@ public class MapController : MonoBehaviour {
         }
         else if(typeName == "buildingName" || typeName == "poiName")
         {
-            Debug.Log("building name = " + typeName + " & POI Name = " +typeName);
-            text.text = "<Building>/pot>\n" + objectName;
-
-           //cube.transform.position = textPostEnd;
-
+            text.text = "<building/poi>\n" + objectName;
             gameObject.transform.position = textPosStart;
             gameObject.AddComponent<NameController>();
         }
