@@ -65,8 +65,9 @@ public class MapController : MonoBehaviour {
         //posText = GameObject.Find("PosText").GetComponent<Text>();
 
         this.InitDefaultProperties();
-        //StartCoroutine(StartGPS());
-        this.UpdateGpsAndSendRequest();
+        //this.UpdateGpsAndSendRequest();
+        StartCoroutine(this.StartGPS());
+        
     }
 	
 	// Update is called once per frame
@@ -83,9 +84,9 @@ public class MapController : MonoBehaviour {
     void InitDefaultProperties()
     {
         this.uniqueId = Guid.NewGuid().ToString();
-        this.playerName = "pitradana"; // PlayerPrefs.GetString("username");
-        this.latitude = -6.915108f;
-        this.longitude = 107.607206f;
+        this.playerName = PlayerPrefs.GetString("username");
+        this.latitude = -6.890439f; //-6.915108f; //-6.890439, 107.611256
+        this.longitude = 107.611256f; //107.607206f;
         this.lastLatitude = float.MinValue;
         this.lastLongitude = float.MinValue;
         this.petName = "pocong"; // PlayerPrefs.GetString("petName");
@@ -98,7 +99,7 @@ public class MapController : MonoBehaviour {
         this.tileY = 0;
 
         TextMesh textMest = petObject.GetComponentInChildren<TextMesh>();
-        textMest.text = "pocong"; // PlayerPrefs.GetString("petName");
+        textMest.text = "pocong"; //PlayerPrefs.GetString("petName");
 
         this.mapAcquiredAndProcessed = false;
         this.firstStart = true;
@@ -143,8 +144,8 @@ public class MapController : MonoBehaviour {
 
     void UpdateGpsAndSendRequest()
     {
-        //this.latitude = Input.location.lastData.latitude;
-        //this.longitude = Input.location.lastData.longitude;
+        this.latitude = Input.location.lastData.latitude;
+        this.longitude = Input.location.lastData.longitude;
         //posText.text = "lat= " + this.latitude + " --- Long=" + this.longitude;
 
         if (this.lastLatitude != this.latitude || this.lastLongitude != this.longitude)
@@ -577,7 +578,7 @@ public class MapController : MonoBehaviour {
                     point2D.Add(new Vector2(latitude, longitude));
                 }
 
-                //this.CreatePolygon(point2D.ToArray(), point.ToArray(), Color.green, "MapObject", "building");
+               // this.CreatePolygon(point2D.ToArray(), point.ToArray(), Color.green, "MapObject", "building");
                 point.Clear();
                 point2D.Clear();
             }
