@@ -322,6 +322,7 @@
     <Compile Include="Assets\Script\ChangeSceneManager.cs" />
     <Compile Include="Assets\Script\CreateAccountScript.cs" />
     <Compile Include="Assets\Script\GameWordManager.cs" />
+    <Compile Include="Assets\Script\Health.cs" />
     <Compile Include="Assets\Script\LevelLoader.cs" />
     <Compile Include="Assets\Script\LoginScript.cs" />
     <Compile Include="Assets\Script\MapController.cs" />

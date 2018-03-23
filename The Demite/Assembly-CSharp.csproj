@@ -78,6 +78,7 @@
      <Compile Include="Assets\Script\ChangeSceneManager.cs" />
      <Compile Include="Assets\Script\CreateAccountScript.cs" />
      <Compile Include="Assets\Script\GameWordManager.cs" />
+     <Compile Include="Assets\Script\Health.cs" />
      <Compile Include="Assets\Script\ItemDragHandler.cs" />
      <Compile Include="Assets\Script\ItemInSlot.cs" />
      <Compile Include="Assets\Script\LevelLoader.cs" />

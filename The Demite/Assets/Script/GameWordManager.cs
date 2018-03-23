@@ -45,8 +45,16 @@ public class GameWordManager : MonoBehaviour {
 
     void Update()
     {
+
         if (wordToSpeech.text == wordFromSpeech.text && itemImage.sprite.name == "bottle_empty")
+
         {
+            //for(int i = 0; i<= pocong.Length; i++)
+            //{
+            //    Destroy(pocong[i]);
+
+            //}
+
             Destroy(pocong);
             Debug.Log("BENAR COY!");
         }

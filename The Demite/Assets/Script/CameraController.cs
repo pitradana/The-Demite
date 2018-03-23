@@ -14,12 +14,17 @@ public class CameraController : MonoBehaviour
     public Text debugText;
     public bool canOver = false;
 
+    private GameObject healthBar;
+
     // Use this for initialization
     void Start ()
     {
         gyroSupported = SystemInfo.supportsGyroscope;
 
         GameObject camParent = new GameObject("camParent");
+        healthBar = GameObject.Find("HealthBar");
+        healthBar.SetActive(false);
+
         camParent.transform.position = transform.position;
         transform.parent = camParent.transform;
 
@@ -46,6 +51,8 @@ public class CameraController : MonoBehaviour
         if (Physics.Raycast(ray, out hit, maxRayDistance))
         {
             canOver = true;
+
+            healthBar.SetActive(true);
             //Debug.DrawLine(hit.point, hit.point + transform.up * 10, Color.green);
             Debug.Log("kena");
             debugText.text = "kena";
@@ -55,6 +62,7 @@ public class CameraController : MonoBehaviour
             canOver = false;
             Debug.Log("tidak kena");
             debugText.text = "tidak kena";
+            healthBar.SetActive(false);
         }
 
         transform.localRotation = gyro.attitude * rotFix;
