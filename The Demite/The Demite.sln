@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "The Demite", "Assembly-CSha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "The Demite", "Assembly-CSharp-Editor.csproj", "{60E98B5F-B5D0-1B5D-DB20-6117F7F6765C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "The Demite", "Assembly-CSharp-Editor-firstpass.csproj", "{8687BD77-77C9-2569-EA0A-BF0135358DD5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{60E98B5F-B5D0-1B5D-DB20-6117F7F6765C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60E98B5F-B5D0-1B5D-DB20-6117F7F6765C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60E98B5F-B5D0-1B5D-DB20-6117F7F6765C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8687BD77-77C9-2569-EA0A-BF0135358DD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8687BD77-77C9-2569-EA0A-BF0135358DD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8687BD77-77C9-2569-EA0A-BF0135358DD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8687BD77-77C9-2569-EA0A-BF0135358DD5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
