@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "The Demite.Plugins", "The D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "The Demite.Editor", "The Demite.Editor.csproj", "{1FAC9DCE-547C-DBA3-1DEF-0DCEC12077DD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "The Demite.Editor.Plugins", "The Demite.Editor.Plugins.csproj", "{41A6E178-9F32-2174-DF9F-0AA34893043B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{1FAC9DCE-547C-DBA3-1DEF-0DCEC12077DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FAC9DCE-547C-DBA3-1DEF-0DCEC12077DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FAC9DCE-547C-DBA3-1DEF-0DCEC12077DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41A6E178-9F32-2174-DF9F-0AA34893043B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41A6E178-9F32-2174-DF9F-0AA34893043B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41A6E178-9F32-2174-DF9F-0AA34893043B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41A6E178-9F32-2174-DF9F-0AA34893043B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -12,7 +12,9 @@ public class GameWordManager : MonoBehaviour {
     private Word currentWord;
     public Text wordFromSpeech;
     GameObject pocong;
-    
+
+    public Image itemImage;
+
     [SerializeField]
     private Text wordToSpeech;
 
@@ -27,7 +29,9 @@ public class GameWordManager : MonoBehaviour {
         pocong = GameObject.FindGameObjectWithTag("pocong");
 
         SetRandomQuestion();
-	}
+        
+        Debug.Log("NAMANYA " + itemImage.sprite.name);
+    }
 
     public void SetRandomQuestion()
     {
@@ -41,8 +45,9 @@ public class GameWordManager : MonoBehaviour {
 
     void Update()
     {
-        
-        if (wordToSpeech.text == wordFromSpeech.text)
+
+        if (wordToSpeech.text == wordFromSpeech.text && itemImage.sprite.name == "bottle_empty")
+
         {
             //for(int i = 0; i<= pocong.Length; i++)
             //{
