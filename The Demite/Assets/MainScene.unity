@@ -306,8 +306,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
-=======
 --- !u!1 &102079398
 GameObject:
   m_ObjectHideFlags: 0
@@ -462,7 +460,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 9.79052, z: 1}
   m_Center: {x: 0, y: -4.39526, z: 0}
->>>>>>> 4cbb4a0281dd6017b86644c57f308bf0f7f142f9
 --- !u!1 &222519641
 GameObject:
   m_ObjectHideFlags: 0
@@ -2718,26 +2715,9 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
-<<<<<<< HEAD
---- !u!114 &1103907803
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1103907802}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0e454900d84d774ca4dcf5a6986826e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  word:
-  - fact: no
-  wordFromSpeech: {fileID: 781288552}
-  wordToSpeech: {fileID: 682088074}
---- !u!4 &1103907804
-=======
+
 --- !u!4 &1420921553
->>>>>>> 4cbb4a0281dd6017b86644c57f308bf0f7f142f9
+
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
