@@ -18,7 +18,6 @@ namespace TheDemiteServer
             Console.WriteLine("Memulai Server");
 
             MySQLDatabase db = new MySQLDatabase();
-
             PlayerManagement playerManagement = new PlayerManagement();
 
             ConnectionFactory factory = new ConnectionFactory();
@@ -46,7 +45,7 @@ namespace TheDemiteServer
                                 exchange: "TheDemiteRequestExchange",
                                 routingKey: "TheDemiteRequestRoutingKey");
 
-                Console.WriteLine(" [*] Waiting for massages.");
+                Console.WriteLine(" [*] Waiting for messages.");
 
                 var consumer = new EventingBasicConsumer(channel);
 
@@ -57,16 +56,14 @@ namespace TheDemiteServer
                     var message = Encoding.UTF8.GetString(body);
 
                     //process request
-                    Console.WriteLine(" [x] recieved request = {0}", message);
+                    //Console.WriteLine(" [x] recieved request = {0}", message);
 
                     dynamic msg = JsonConvert.DeserializeObject(message);
-
                     if( msg != null)
                     {
-                        //login
                         if(msg["type"] == "login")
                         {
-                            Console.WriteLine(" [x] processing login request from {0}" , msg["id"]);
+                            Console.WriteLine(" [x] processing login request from {0}" , msg["username"]);
 
                             string username = (string)msg["username"];
                             string password = (string)msg["password"];
@@ -95,7 +92,7 @@ namespace TheDemiteServer
                                                 basicProperties: null,
                                                 body: newMassage);
 
-                            Console.WriteLine(" [x] login response sent to {0} ", msg["id"]);
+                            Console.WriteLine(" [x] login response sent to {0} ", msg["username"]);
                         }
 
                         if (msg["type"] == "newaccount")
@@ -215,14 +212,14 @@ namespace TheDemiteServer
 
                         if (msg["type"] == "map")
                         {
-                            Console.WriteLine(" [x] processing map request from {0} ", msg["playerName"]);
+                            Console.WriteLine(" [x] processing map request from {0} ", msg["username"]);
 
                             ResponseJson responseJson = new ResponseJson();
                             responseJson.id = msg["id"];
                             responseJson.type = msg["type"];
                             responseJson.mapData = playerManagement.AcquireMapData(msg);
                             responseJson.needCreateMap = playerManagement.GetNeedCreateMap();
-                            responseJson.playerName = msg["playerName"];
+                            responseJson.playerName = msg["username"];
                             responseJson.playerPosX = playerManagement.GetPlayerPosX();
                             responseJson.playerPosY = playerManagement.GetPlayerPosY();
                             responseJson.centerPosX = playerManagement.GetCenterPosX();
@@ -232,6 +229,8 @@ namespace TheDemiteServer
 
                             var jsonString = JsonConvert.SerializeObject(responseJson);
 
+                            Console.WriteLine(jsonString);
+
                             // send response
                             var newMessage = Encoding.UTF8.GetBytes(jsonString);
                             channel.BasicPublish(exchange: "TheDemiteResponseExchange",
@@ -239,7 +238,7 @@ namespace TheDemiteServer
                                                  basicProperties: null,
                                                  body: newMessage);
 
-                            Console.WriteLine(" [x] map response sent to {0} ", msg["playerName"]);
+                            Console.WriteLine(" [x] map response sent to {0} ", msg["username"]);
 
                             List<UnityPlayerPetPosition> unityPlayerPos = playerManagement.GetOthers(playerManagement.GetTileX(), playerManagement.GetTileY());
                             UnityPlayerPetPosition curPlayer = unityPlayerPos.Find(x => x.playerName == (string)msg["playerName"]);

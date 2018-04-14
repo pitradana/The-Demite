@@ -65,8 +65,8 @@ public class MapController : MonoBehaviour {
         //posText = GameObject.Find("PosText").GetComponent<Text>();
 
         this.InitDefaultProperties();
-        //this.UpdateGpsAndSendRequest();
-        StartCoroutine(this.StartGPS());
+        this.UpdateGpsAndSendRequest();
+        //StartCoroutine(this.StartGPS());
         
     }
 	
@@ -144,8 +144,8 @@ public class MapController : MonoBehaviour {
 
     void UpdateGpsAndSendRequest()
     {
-        this.latitude = Input.location.lastData.latitude;
-        this.longitude = Input.location.lastData.longitude;
+        //this.latitude = Input.location.lastData.latitude;
+        //this.longitude = Input.location.lastData.longitude;
         //posText.text = "lat= " + this.latitude + " --- Long=" + this.longitude;
 
         if (this.lastLatitude != this.latitude || this.lastLongitude != this.longitude)
@@ -441,7 +441,7 @@ public class MapController : MonoBehaviour {
                     ghostNameMesh.fontSize = 100;
                     ghostNameMesh.color = Color.green;
 
-                    Font font = Resources.Load<Font>("Font/SHADSER");
+                    Font font = Resources.Load<Font>("Font/youmurdererbb_reg");
                     ghostNameMesh.font = font;
                     var mr = ghostNameMesh.GetComponent<Renderer>();
                     mr.material = font.material;
@@ -457,7 +457,7 @@ public class MapController : MonoBehaviour {
                     meshText.fontSize = 100;
                     meshText.color = Color.green;
 
-                    Font font1 = Resources.Load<Font>("Font/SHADSER");
+                    Font font1 = Resources.Load<Font>("Font/youmurdererbb_reg");
                     meshText.font = font1;
                     var mr1 = meshText.GetComponent<Renderer>();
                     mr1.material = font1.material;
@@ -559,9 +559,9 @@ public class MapController : MonoBehaviour {
                 if(buildingName != null)
                 {
                     var coordinate = tempData["listCoordinate"][0];                  
-                    this.ShowName(new Vector3((float)coordinate["latitude"], 12f, (float)coordinate["longitude"]), new Vector3(), buildingName, "MapObject", "buildingName", Color.green);
+                    this.ShowName(new Vector3((float)coordinate["latitude"], 12f, (float)coordinate["longitude"]), new Vector3(), buildingName, "MapObject", "buildingName", Color.red);
 
-                    //this.ShowGhost(new Vector3((float)coordinate["latitude"], 10f, (float)coordinate["longitude"]), buildingName, "buildingName");
+                    this.ShowGhost(new Vector3((float)coordinate["latitude"], 10f, (float)coordinate["longitude"]), buildingName, "buildingName");
                     //Debug.Log();
                     //petObject.transform.position = new Vector3((float)coordinate["latitude"], 12f, (float)coordinate["longitude"]);
                     //Debug.Log("pocong = " + petObject.transform.position);
@@ -578,7 +578,7 @@ public class MapController : MonoBehaviour {
                     point2D.Add(new Vector2(latitude, longitude));
                 }
 
-               // this.CreatePolygon(point2D.ToArray(), point.ToArray(), Color.green, "MapObject", "building");
+                this.CreatePolygon(point2D.ToArray(), point.ToArray(), Color.green, "MapObject", "building");
                 point.Clear();
                 point2D.Clear();
             }
@@ -619,7 +619,7 @@ public class MapController : MonoBehaviour {
 
             for (int m = 0; m < tempVector.Length - 1; m++)
             {
-                //CreateRoadWaterMesh(tempVector[m], tempVector[m + 1], 2.0f, "MapObject", Color.red, "road");
+                CreateRoadWaterMesh(tempVector[m], tempVector[m + 1], 2.0f, "MapObject", Color.red, "road");
 
                 Vector3 tempNamePost = Vector3.Lerp(tempVector[m], tempVector[m + 1], 0.5f);
                 float tempDistance = Vector3.Distance(this.mainCam.transform.parent.position, tempNamePost);
@@ -716,7 +716,7 @@ public class MapController : MonoBehaviour {
         text.fontStyle = FontStyle.Italic;
         text.anchor = TextAnchor.MiddleCenter;
         text.alignment = TextAlignment.Center;
-        Font font = Resources.Load<Font>("Font/SHADSER");
+        Font font = Resources.Load<Font>("Font/youmurdererbb_reg");
         text.font = font;
         var mr = text.GetComponent<Renderer>();
         mr.material = font.material;
@@ -737,11 +737,12 @@ public class MapController : MonoBehaviour {
 
     void ShowGhost(Vector3 textPosStart, string objectName, string typeName)
     {
-        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        //GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        GameObject Ghost = Instantiate(Resources.Load("pocong")) as GameObject;
 
         if(typeName == "buildingName" || typeName == "poiName")
         {
-            cube.transform.position = textPosStart;
+            Ghost.transform.position = textPosStart;
         }
 
         //var Ghost = gameObject.AddComponent<Mes>
