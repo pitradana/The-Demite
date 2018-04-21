@@ -89,7 +89,7 @@ public class MapController : MonoBehaviour {
         this.longitude = 107.611256f; //107.607206f;
         this.lastLatitude = float.MinValue;
         this.lastLongitude = float.MinValue;
-        this.petName = "pocong"; // PlayerPrefs.GetString("petName");
+        this.petName = PlayerPrefs.GetString("petName"); // PlayerPrefs.GetString("petName");
         this.petPosX = 0f;
         this.petPosY = 0f;
 
@@ -99,7 +99,7 @@ public class MapController : MonoBehaviour {
         this.tileY = 0;
 
         TextMesh textMest = petObject.GetComponentInChildren<TextMesh>();
-        textMest.text = "pocong"; //PlayerPrefs.GetString("petName");
+        textMest.text = PlayerPrefs.GetString("petName");
 
         this.mapAcquiredAndProcessed = false;
         this.firstStart = true;
@@ -141,7 +141,8 @@ public class MapController : MonoBehaviour {
             this.UpdateGpsAndSendRequest();
         }
     }
-
+    
+    // update latitude and longitude value and send the request to server through rabbitmq
     void UpdateGpsAndSendRequest()
     {
         //this.latitude = Input.location.lastData.latitude;
@@ -175,16 +176,12 @@ public class MapController : MonoBehaviour {
     {
         var receivedJson = System.Text.Encoding.UTF8.GetString(received.Message.Body);
         var msg = CymaticLabs.Unity3D.Amqp.SimpleJSON.JSON.Parse(receivedJson);
+        //Debug.Log(msg);
 
-        Debug.Log(msg);
-
-        if(msg != null)
+        if(msg != null) //check for msg
         {
-            Debug.Log("msg masuk = " + (string)msg["type"]);
-
             string id = (string)msg["id"];
-
-             if (id == this.uniqueId) // check for guid or unique id
+            if (id == this.uniqueId) // check for guid or unique id
             {
                 string responseType = (string)msg["type"];
                 if (responseType == "map") // response for create map
@@ -200,7 +197,8 @@ public class MapController : MonoBehaviour {
                         this.CreateBuilding(buildingData);
                         var roadData = msg["mapData"]["listRoadData"];
                         this.CreateRoad(roadData);
-                    }else
+                    }
+                    else
                     {
                         if (firstStart)
                         {
@@ -221,7 +219,6 @@ public class MapController : MonoBehaviour {
 
                     if (firstPet)
                     {
-                        //Debug.Log(lastLatitude + " & " + lastLongitude);
                         petObject.transform.position = new Vector3((float)msg["playerPosX"], 0, (float)msg["playerPosY"]);
                         firstPet = false;
                     }
@@ -269,6 +266,14 @@ public class MapController : MonoBehaviour {
                     UpdateOthersPosition(msg["unityPlayerPos"]);
                 }
             }
+
+            if ((string)msg["type"] == "updateBall")
+            {
+                if ((int)msg["tileX"] == this.tileX && (int)msg["tileY"] == this.tileY)
+                {
+                    UpdateOtherBallState(msg);
+                }
+            }
         } 
     }
 
@@ -311,22 +316,28 @@ public class MapController : MonoBehaviour {
             OtherPlayerData remove = removeList[i];
 
             GameObject otherPlayer = GameObject.Find(remove.playerName);
-            GameObject otherGhostPlayer = GameObject.Find(remove.playerName + "_" + remove.petName);
+            GameObject otherPetPlayer = GameObject.Find(remove.playerName + "_" + remove.petName);
             GameObject food = GameObject.Find("food_" + remove.playerName);
+            GameObject ball = GameObject.Find("ball_" + remove.playerName);
 
             if (otherPlayer != (GameObject)null)
             {
                 Destroy(otherPlayer);
             }
 
-            if(otherGhostPlayer != (GameObject)null)
+            if(otherPetPlayer != (GameObject)null)
             {
-                Destroy(otherGhostPlayer);
+                Destroy(otherPetPlayer);
             }
 
             if (food != (GameObject)null)
             {
                 Destroy(food);
+            }
+
+            if (ball != (GameObject)null)
+            {
+                Destroy(ball);
             }
 
             otherPlayerDataList.Remove(remove);
@@ -345,11 +356,11 @@ public class MapController : MonoBehaviour {
             float otherPosX = (float)data[i]["posX"];
             float otherPosY = (float)data[i]["posY"];
 
-            string otherGhostName = (string)data[i]["petName"];
-            float otherGhostPosX = (float)data[i]["petPosX"];
-            float otherGhostPosY = (float)data[i]["petPosY"];
-            float otherGhostLastPosX = (float)data[i]["petLastPosX"];
-            float otherGhostLastPosY = (float)data[i]["petLastPosY"];
+            string otherPetName = (string)data[i]["petName"];
+            float otherPetPosX = (float)data[i]["petPosX"];
+            float otherPetPosY = (float)data[i]["petPosY"];
+            float otherPetLastPosX = (float)data[i]["petLastPosX"];
+            float otherPetLastPosY = (float)data[i]["petLastPosY"];
 
             string otherStartTImeMoveString = (string)data[i]["timeStartMove"];
             long otherStartTimeMove = 0L;
@@ -359,7 +370,7 @@ public class MapController : MonoBehaviour {
                 otherStartTimeMove = Convert.ToInt64(otherStartTImeMoveString);
             }
 
-            string otherGhostState = (string)data[i]["petState"];
+            string otherPetState = (string)data[i]["petState"];
             float otherPetSpeed = (float)data[i]["petSpeed"];
 
             Debug.Log("main player = " + this.playerName);
@@ -375,17 +386,17 @@ public class MapController : MonoBehaviour {
                     newOtherPlayer.playerName = otherUsername;
                     newOtherPlayer.posX = otherPosX - this.centerPosX;
                     newOtherPlayer.posY = otherPosY - this.centerPosY;
-                    newOtherPlayer.petName = otherGhostName;
-                    newOtherPlayer.petState = otherGhostState;
+                    newOtherPlayer.petName = otherPetName;
+                    newOtherPlayer.petState = otherPetState;
 
-                    float mapGhostLastPosX = otherGhostLastPosX - this.centerPosX;
-                    float mapGhostLastPosY = otherGhostLastPosY - this.centerPosY;
-                    float mapGhostPosX = otherGhostPosX - this.centerPosX;
-                    float mapGhostPosY = otherGhostPosY - this.centerPosY;
+                    float mapPetLastPosX = otherPetLastPosX - this.centerPosX;
+                    float mapPetLastPosY = otherPetLastPosY - this.centerPosY;
+                    float mapPetPosX = otherPetPosX - this.centerPosX;
+                    float mapPetPosY = otherPetPosY - this.centerPosY;
 
-                    Vector3 mapGhostLastPos = new Vector3(mapGhostLastPosX, 0.0f, mapGhostLastPosY);
-                    Vector3 mapGhostPos = new Vector3(mapGhostPosX, 0.0f, mapGhostPosX);
-                    float totalDistance = Vector3.Distance(mapGhostLastPos, mapGhostPos);
+                    Vector3 mapPetLastPos = new Vector3(mapPetLastPosX, 0.0f, mapPetLastPosY);
+                    Vector3 mapPetPos = new Vector3(mapPetLastPosY, 0.0f, mapPetLastPosY);
+                    float totalDistance = Vector3.Distance(mapPetLastPos, mapPetPos);
                     float distanceTraveled = 0.0f;
 
                     //double seconds = (DateTime.Now - new DateTime(otherStartTimeMove)).TotalSeconds;
@@ -406,22 +417,22 @@ public class MapController : MonoBehaviour {
 
                     if (distanceTraveled >= totalDistance)
                     {
-                        newOtherPlayer.petFromPosX = mapGhostLastPosX;
-                        newOtherPlayer.petFromPosY = mapGhostLastPosY;
-                        newOtherPlayer.petToPosX = mapGhostPosX;
-                        newOtherPlayer.petToPosY = mapGhostPosY;
+                        newOtherPlayer.petFromPosX = mapPetLastPosX;
+                        newOtherPlayer.petFromPosY = mapPetLastPosY;
+                        newOtherPlayer.petToPosX = mapPetPosX;
+                        newOtherPlayer.petToPosY = mapPetPosY;
 
-                        predictedPos = new Vector3(mapGhostPosX, 0.0f, mapGhostPosY);
+                        predictedPos = new Vector3(mapPetPosX, 0.0f, mapPetPosY);
                     }
                     else
                     {
                         float percentage = distanceTraveled / totalDistance;
 
-                        predictedPos = Vector3.Lerp(mapGhostLastPos, mapGhostPos, percentage);
+                        predictedPos = Vector3.Lerp(mapPetLastPos, mapPetPos, percentage);
                         newOtherPlayer.petFromPosX = predictedPos.x;
                         newOtherPlayer.petFromPosY = predictedPos.z;
-                        newOtherPlayer.petToPosX = mapGhostPosX;
-                        newOtherPlayer.petToPosY = mapGhostPosY;
+                        newOtherPlayer.petToPosX = mapPetPosX;
+                        newOtherPlayer.petToPosY = mapPetPosY;
                     }
 
                     newOtherPlayer.petSpeed = otherPetSpeed;
@@ -429,21 +440,21 @@ public class MapController : MonoBehaviour {
                     otherPlayerDataList.Add(newOtherPlayer);
 
                     //jika belum ada nama pet
-                    GameObject newGhostObject = Instantiate(Resources.Load("PetPrefab")) as GameObject;
-                    newGhostObject.name = "pet_" + otherGhostName;
-                    newGhostObject.transform.position = new Vector3(predictedPos.x, 0.0f, predictedPos.z);
+                    GameObject newPetObject = Instantiate(Resources.Load("PetPrefab")) as GameObject;
+                    newPetObject.name = "pet_" + otherPetName;
+                    newPetObject.transform.position = new Vector3(predictedPos.x, 0.0f, predictedPos.z);
 
-                    GameObject namaGhost = newGhostObject.transform.Find("PetNameText").gameObject;
-                    TextMesh ghostNameMesh = namaGhost.GetComponent<TextMesh>();
+                    GameObject petName = newPetObject.transform.Find("PetNameText").gameObject;
+                    TextMesh petNameMesh = petName.GetComponent<TextMesh>();
 
-                    ghostNameMesh.text = "<pet>\n" + otherGhostName;
-                    ghostNameMesh.characterSize = 0.05f;
-                    ghostNameMesh.fontSize = 100;
-                    ghostNameMesh.color = Color.green;
+                    petNameMesh.text = "<pet>\n" + otherPetName;
+                    petNameMesh.characterSize = 0.05f;
+                    petNameMesh.fontSize = 100;
+                    petNameMesh.color = Color.green;
 
                     Font font = Resources.Load<Font>("Font/youmurdererbb_reg");
-                    ghostNameMesh.font = font;
-                    var mr = ghostNameMesh.GetComponent<Renderer>();
+                    petNameMesh.font = font;
+                    var mr = petNameMesh.GetComponent<Renderer>();
                     mr.material = font.material;
 
                     GameObject otherPlayerNameObject = new GameObject();
@@ -464,9 +475,9 @@ public class MapController : MonoBehaviour {
                 }
                 else
                 {
-                    other.petToPosX = otherGhostPosX - this.centerPosX;
-                    other.petToPosY = otherGhostPosY - this.centerPosY;
-                    other.petState = otherGhostState;
+                    other.petToPosX = otherPetPosX - this.centerPosX;
+                    other.petToPosY = otherPetPosY - this.centerPosY;
+                    other.petState = otherPetState;
                     other.petSpeed = otherPetSpeed;
 
                     if(other.petState == "walkFood")
@@ -478,8 +489,36 @@ public class MapController : MonoBehaviour {
                         food.transform.position = new Vector3(other.petToPosX, 0, other.petToPosY);
                     }
 
+                    if (other.petState == "walktoball")
+                    {
+                        GameObject otherBallFound = GameObject.Find("ball_" + otherUsername);
+                        if (otherBallFound == (GameObject)null)
+                        {
+                            GameObject otherBall = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                            otherBall.name = "ball_" + otherUsername;
+                            otherBall.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+                            otherBall.transform.position = new Vector3(other.petToPosX, 0.0f, other.petToPosY);
+
+                            Rigidbody ballRigibody = otherBall.AddComponent<Rigidbody>();
+                            ballRigibody.mass = 1;
+                            ballRigibody.isKinematic = true;
+                        }
+                    }
+
+                    if (other.petState == "walkbringball")
+                    {
+                        GameObject otherBall = GameObject.Find("ball_" + otherUsername);
+                        GameObject otherPet = GameObject.Find("pet_" + otherUsername);
+
+                        otherBall.transform.position = otherPet.transform.position;
+                        otherBall.transform.parent = otherPet.transform;
+                    }
+
                     GameObject otherPlayer = GameObject.Find(otherUsername);
-                    otherPlayer.transform.position = new Vector3(otherPosX - this.centerPosX, 10.0f, otherPosY - centerPosY);
+                    if(otherPlayer != (GameObject)null)
+                    {
+                        otherPlayer.transform.position = new Vector3(otherPosX - this.centerPosX, 10.0f, otherPosY - centerPosY);
+                    }
                 }
             }
         }
@@ -487,40 +526,84 @@ public class MapController : MonoBehaviour {
 
     void OtherPetMovement()
     {
-        for( int i=0; i<otherPlayerDataList.Count; i++)
+        for (int i = 0; i < otherPlayerDataList.Count; i++)
         {
-
             OtherPlayerData player = (OtherPlayerData)otherPlayerDataList[i];
 
-            if(player.playerName != this.playerName)
+            if (player.playerName != this.playerName)
             {
-                if(player.petState =="walk" || player.petState == "walkFood")
+                if (player.petState == "walk" || player.petState == "walkFood" || player.petState == "call" || player.petState == "walktoball" || player.petState == "walkbringball")
                 {
-                    GameObject currentGhostObject = GameObject.Find(player.playerName + "_" + player.petName);
-                    Animator animator = currentGhostObject.GetComponent<Animator>();
-                    animator.runtimeAnimatorController = Resources.Load("AnimalController/PetWalkController") as RuntimeAnimatorController;
+                    GameObject curPetObject = GameObject.Find("pet_" + player.playerName);
+                    Animator anim = curPetObject.GetComponent<Animator>();
+                    anim.runtimeAnimatorController = Resources.Load("AnimationController/PetWalkController") as RuntimeAnimatorController;
 
-                    Vector3 lookpos = new Vector3(player.petToPosX, 0.0f, player.petToPosY) - currentGhostObject.transform.position;
+                    Vector3 lookpos = new Vector3(player.petToPosX, 0.0f, player.petToPosY) - curPetObject.transform.position;
                     lookpos.y = 0;
                     if (lookpos != Vector3.zero)
                     {
                         var rotation = Quaternion.LookRotation(lookpos);
-                        currentGhostObject.transform.rotation = Quaternion.Slerp(currentGhostObject.transform.rotation, rotation, Time.deltaTime * 2.0f);
+                        curPetObject.transform.rotation = Quaternion.Slerp(curPetObject.transform.rotation, rotation, Time.deltaTime * 2.0f);
                     }
 
-                    currentGhostObject.transform.position = Vector3.MoveTowards(currentGhostObject.transform.position, new Vector3(player.petToPosX, 0.0f, player.petToPosY), Time.deltaTime * 1.0f);
+                    curPetObject.transform.position = Vector3.MoveTowards(curPetObject.transform.position, new Vector3(player.petToPosX, 0.0f, player.petToPosY), Time.deltaTime * player.petSpeed);
                 }
-                else if(player.petState == "eatfood")
+                else if (player.petState == "eatFood")
                 {
-                    Animator animator = GameObject.Find(player.playerName + "_" + player.petName).GetComponent<Animator>();
-                    animator.runtimeAnimatorController = Resources.Load("AnimatorController/GhostEatController") as RuntimeAnimatorController;
-
+                    Animator anim = GameObject.Find("pet_" + player.playerName).GetComponent<Animator>();
+                    anim.runtimeAnimatorController = Resources.Load("AnimationController/PetEatController") as RuntimeAnimatorController;
                     GameObject food = GameObject.Find("food_" + player.playerName);
-                    if(food != (GameObject)null)
+                    if (food != (GameObject)null)
                     {
                         Destroy(food);
                     }
+
                 }
+
+            }
+        }
+    }
+
+    void UpdateOtherBallState(CymaticLabs.Unity3D.Amqp.SimpleJSON.JSONNode data)
+    {
+        Debug.Log("Update Ball State");
+
+        string otherUsername = (string)data["username"];
+        string otherBallState = (string)data["ballState"];
+        float ballPosX = (float)data["ballPosX"];
+        float ballPosY = (float)data["ballPosY"];
+        float ballPosZ = (float)data["ballPosZ"];
+
+        if (otherUsername != this.playerName)
+        {
+            if (otherBallState == "live")
+            {
+                GameObject otherBall = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                otherBall.name = "ball_" + otherUsername;
+                otherBall.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+                otherBall.transform.position = new Vector3(ballPosX - this.centerPosX, 10.0f, ballPosZ - this.centerPosY);
+
+                Rigidbody ballRigibody = otherBall.AddComponent<Rigidbody>();
+                ballRigibody.mass = 1;
+                ballRigibody.isKinematic = true;
+            }
+            else if (otherBallState == "none")
+            {
+                GameObject otherBall = GameObject.Find("ball_" + otherUsername);
+                Destroy(otherBall);
+            }
+            else if (otherBallState == "throw")
+            {
+                GameObject otherBall = GameObject.Find("ball_" + otherUsername);
+                otherBall.transform.position = otherBall.transform.position + new Vector3(ballPosX, ballPosY, ballPosZ) * (Camera.main.nearClipPlane + 2f);
+                otherBall.GetComponent<Rigidbody>().isKinematic = false;
+                otherBall.GetComponent<Rigidbody>().velocity = new Vector3(ballPosX, ballPosY, ballPosZ) * 5;
+            }
+            else if (otherBallState == "inground")
+            {
+                GameObject otherBall = GameObject.Find("ball_" + otherUsername);
+                otherBall.GetComponent<Rigidbody>().isKinematic = true;
+                otherBall.transform.position = new Vector3(ballPosX - this.centerPosX, 0.0f, ballPosZ - this.centerPosY);
             }
         }
     }
@@ -540,7 +623,7 @@ public class MapController : MonoBehaviour {
             CreateRoadWaterMesh(start, end, 8.0f, "RouteObject", Color.green, "route");
         }
     }
-
+   
     void CreateBuilding(CymaticLabs.Unity3D.Amqp.SimpleJSON.JSONNode buildingData)
     {
         List<Vector3> point = new List<Vector3>();
