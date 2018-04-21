@@ -12,17 +12,16 @@ namespace TheDemiteServer
         private float latitude;
         private float longitude;
         private MapControllerServer mapControl;
-        private Ghost pet;
+        private Pet pet;
         private bool isActive;
 
         public Player(string playerName, float playerLatitude, float playerLongitude, string petName, float petPosX, float petPosY)
         {
-            //this.playerId = playerId;
             this.playerName = playerName;
             this.latitude = playerLatitude;
             this.longitude = playerLongitude;
             this.mapControl = new MapControllerServer();
-            this.pet = new Ghost(petName, petPosX, petPosY);
+            this.pet = new Pet(petName, petPosX, petPosY);
             this.isActive = true;
         }
 
@@ -33,7 +32,6 @@ namespace TheDemiteServer
             {
                 Console.WriteLine("creating map");
                 this.mapControl.CreateMap();
-                //this.mapControl.SetMapReady(true);
             }
             else
             {
@@ -85,10 +83,10 @@ namespace TheDemiteServer
 
         public void SetPet(string petName, float posX, float posY)
         {
-            this.pet = new Ghost(petName, posX, posY);
+            this.pet = new Pet(petName, posX, posY);
         }
 
-        public Ghost GetPet()
+        public Pet GetPet()
         {
             return this.pet;
         }

@@ -18,7 +18,6 @@ namespace TheDemiteServer
             Console.WriteLine("Memulai Server");
 
             MySQLDatabase db = new MySQLDatabase();
-
             PlayerManagement playerManagement = new PlayerManagement();
 
             ConnectionFactory factory = new ConnectionFactory();
@@ -32,6 +31,7 @@ namespace TheDemiteServer
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
+                // create if not exist and bind exchange and queue for request and response
                 channel.ExchangeDeclare(exchange: "TheDemiteRequestExchange",
                                         type: "direct",
                                         durable: true);
@@ -46,7 +46,7 @@ namespace TheDemiteServer
                                 exchange: "TheDemiteRequestExchange",
                                 routingKey: "TheDemiteRequestRoutingKey");
 
-                Console.WriteLine(" [*] Waiting for massages.");
+                Console.WriteLine(" [*] Waiting for messages.");
 
                 var consumer = new EventingBasicConsumer(channel);
 
@@ -60,29 +60,29 @@ namespace TheDemiteServer
                     Console.WriteLine(" [x] recieved request = {0}", message);
 
                     dynamic msg = JsonConvert.DeserializeObject(message);
-
-                    if( msg != null)
+                    if (msg != null)
                     {
-                        //login
-                        if(msg["type"] == "login")
+                        if (msg["type"] == "login")
                         {
-                            Console.WriteLine(" [x] processing login request from {0}" , msg["id"]);
+                            Console.WriteLine(" [x] processing login request from {0}", msg["username"]);
 
                             string username = (string)msg["username"];
                             string password = (string)msg["password"];
                             int count = db.Count("user", "username='" + username + "' AND password='" + password + "'");
 
-                            if(count == 1)
+                            if (count == 1)
                             {
                                 count = db.Update("user", "is_active=1", "username='" + username + "'");
                             }
 
-                            LoginResponseJson response = new LoginResponseJson();
+                            playerManagement.AddPlayer(username);
 
+                            LoginResponseJson response = new LoginResponseJson();
                             response.id = msg["id"];
                             response.type = msg["type"];
                             response.count = count;
                             response.username = username;
+                            //response.data = db.GetPetData(username);
 
                             var jsonString = JsonConvert.SerializeObject(response);
 
@@ -95,24 +95,25 @@ namespace TheDemiteServer
                                                 basicProperties: null,
                                                 body: newMassage);
 
-                            Console.WriteLine(" [x] login response sent to {0} ", msg["id"]);
+                            Console.WriteLine(" [x] login response sent to {0} ", msg["username"]);
                         }
 
                         if (msg["type"] == "newaccount")
                         {
-                            Console.WriteLine(" [x] processing new account request from {0} ", msg["id"]);
+                            Console.WriteLine(" [x] processing new account request from {0} ", msg["username"]);
 
                             string firstName = (string)msg["firstName"];
                             string lastName = (string)msg["lastName"];
                             string email = (string)msg["email"];
                             string username = (string)msg["username"];
                             string password = (string)msg["password"];
+                            string petName = (string)msg["petName"];
 
                             NewAccountResponseJson response = new NewAccountResponseJson();
 
                             response.id = msg["id"];
                             response.type = msg["type"];
-                            response.result = db.CreateNewAccount(firstName, lastName, username, password, email);
+                            response.result = db.CreateNewAccount(firstName, lastName, username, password, email, petName);
 
                             var jsonString = JsonConvert.SerializeObject(response);
 
@@ -123,8 +124,7 @@ namespace TheDemiteServer
                                                 basicProperties: null,
                                                 body: newMassage);
 
-                            //Console.WriteLine("helloworld");
-                            Console.WriteLine(" [x] new account response sent to {0} ", msg["id"]);
+                            Console.WriteLine(" [x] new account response sent to {0} ", msg["username"]);
                         }
 
                         if (msg["type"] == "resetpassword")
@@ -144,14 +144,13 @@ namespace TheDemiteServer
                             {
                                 string newPass = emailManage.CreateRandomPassword(6);
                                 updateResult = db.Update("user", "password" + newPass, "id=" + user_id);
-                                if(updateResult != -1)
+                                if (updateResult != -1)
                                 {
                                     result = emailManage.SendEmail(email, newPass, 1);
                                 }
                             }
 
                             ResetPasswordJson reset = new ResetPasswordJson();
-
                             reset.id = msg["id"];
                             reset.type = msg["type"];
                             reset.result = result;
@@ -168,7 +167,7 @@ namespace TheDemiteServer
                                                 body: newMassage);
                         }
 
-                        if(msg["type"] == "changepassword")
+                        if (msg["type"] == "changepassword")
                         {
                             Console.WriteLine(" [x] processing change password request from {0} ", msg["id"]);
 
@@ -182,10 +181,10 @@ namespace TheDemiteServer
 
                             int count = db.Count("user", "username='" + username + "'");
 
-                            if(count != -1)
+                            if (count != -1)
                             {
                                 int count2 = db.Count("user", "password" + oldPass);
-                                if(count2 != -1)
+                                if (count2 != -1)
                                 {
                                     result = db.Update("user", "password=" + newPass, "username='" + username + "'");
                                     if (result != -1)
@@ -232,6 +231,8 @@ namespace TheDemiteServer
 
                             var jsonString = JsonConvert.SerializeObject(responseJson);
 
+                            Console.WriteLine(jsonString);
+
                             // send response
                             var newMessage = Encoding.UTF8.GetBytes(jsonString);
                             channel.BasicPublish(exchange: "TheDemiteResponseExchange",
@@ -267,8 +268,8 @@ namespace TheDemiteServer
                         {
                             Console.WriteLine(" [x] processing maptohome request from {0} ", msg["id"]);
 
-                            int result = playerManagement.SetPlayerActive(msg);
-
+                            int result = playerManagement.SetPlayerActiveFalse((string)msg["username"], false);
+                            //int result = playerManagement.SetPlayerActi
 
                             // send update to other user that user return home
                             List<UnityPlayerPetPosition> unityPlayerPos = playerManagement.GetOthers((int)msg["tileX"], (int)msg["tileY"]);
@@ -337,10 +338,9 @@ namespace TheDemiteServer
                             Console.WriteLine(" [x] route response sent to {0} ", msg["id"]);
                         }
 
-                        /*
                         if (msg["type"] == "returntitle")
                         {
-                            Console.WriteLine(" [x] processing return title request from {0} ", msg["id"]);
+                            Console.WriteLine(" [x] processing return title request from {0} ", msg["username"]);
 
                             string username = (string)msg["username"];
                             int rest = (int)msg["rest"];
@@ -351,7 +351,7 @@ namespace TheDemiteServer
                             int money = (int)msg["money"];
                             int xp = (int)msg["xp"];
 
-                            //int result = db.UpdateStatus(username, rest, energy, agility, stress, heart, money, xp);
+                            int result = db.UpdateStatus(username, rest, energy, agility, stress, heart, money, xp);
 
                             if (result == 1)
                             {
@@ -372,8 +372,8 @@ namespace TheDemiteServer
                                                  basicProperties: null,
                                                  body: newMessage);
 
-                            Console.WriteLine(" [x] return title response sent to {0} ", msg["id"]);
-                        } */
+                            Console.WriteLine(" [x] return title response sent to {0} ", msg["username"]);
+                        }
 
                         if (msg["type"] == "listplayer")
                         {
@@ -387,7 +387,6 @@ namespace TheDemiteServer
                             listPlayer.type = msg["type"];
                             listPlayer.tileX = (int)msg["tileX"];
                             listPlayer.tileY = (int)msg["tileY"];
-                            //listPlayer.id = msg["id"];
 
                             var jsonString = JsonConvert.SerializeObject(listPlayer);
 
@@ -400,13 +399,43 @@ namespace TheDemiteServer
                                                  routingKey: "TheDemiteResponseRoutingKey",
                                                  basicProperties: null,
                                                  body: newMessage);
+                        }
 
+                        if (msg["type"] == "updateBall")
+                        {
+                            Console.WriteLine(" [x] processing ball state request from {0} ", msg["username"]);
+
+                            float[] ballPos = playerManagement.UpdateBallState(msg);
+
+                            UpdateBallResponse response = new UpdateBallResponse();
+                            response.type = msg["type"];
+                            response.username = msg["username"];
+                            response.tileX = msg["tileX"];
+                            response.tileY = msg["tileY"];
+
+                            response.ballPosX = ballPos[0];
+                            response.ballPosY = msg["ballPosY"];
+                            response.ballPosZ = ballPos[1];
+
+                            response.ballState = msg["ballState"];
+
+                            var jsonString = JsonConvert.SerializeObject(response);
+
+                            Console.WriteLine(" [x] sending ball state response to {0} ", msg["username"]);
+
+                            var newMessage = Encoding.UTF8.GetBytes(jsonString);
+                            channel.BasicPublish(exchange: "DigipetResponseExchange",
+                                                    routingKey: "DigipetResponseRoutingKey",
+                                                    basicProperties: null,
+                                                    body: newMessage);
                         }
                     }
-                    channel.BasicAck(ea.DeliveryTag, false);
+                        channel.BasicAck(ea.DeliveryTag, false);
                 };
 
-                channel.BasicConsume(queue: queueName, autoAck: false, consumer: consumer);
+                channel.BasicConsume(queue: queueName, 
+                                     autoAck: false, 
+                                     consumer: consumer);
 
                 Console.WriteLine("Press [enter] to stop server and exit");
                 Console.ReadLine();
@@ -419,7 +448,7 @@ namespace TheDemiteServer
             public string type;
             public string username;
             public int count;
-            //public List<Object> data;
+            public List<Object> data;
         }
 
         class NewAccountResponseJson
@@ -479,6 +508,25 @@ namespace TheDemiteServer
             public List<Coordinate> route;
             public string type;
             public string id;
+        }
+
+        class ReturnTitleRespondJson
+        {
+            public string id;
+            public string type;
+            public int result;
+        }
+
+        class UpdateBallResponse
+        {
+            public string type;
+            public string username;
+            public int tileX;
+            public int tileY;
+            public float ballPosX;
+            public float ballPosY;
+            public float ballPosZ;
+            public string ballState;
         }
     }
 }

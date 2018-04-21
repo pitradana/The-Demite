@@ -39,7 +39,6 @@ namespace TheDemiteServer
             Player currentPlayer;
 
             bool registered = listPlayer.Exists(x => x.GetPlayerName() == (string)data.playerName);
-
             if (!registered)
             {
                 currentPlayer = new Player(data.playerName.ToString(), (float)Convert.ToDouble(data.latitude), (float)Convert.ToDouble(data.longitude), data.petName.ToString(), (float)Convert.ToDouble(data.petPosX), (float)Convert.ToDouble(data.petPosY));
@@ -102,17 +101,19 @@ namespace TheDemiteServer
                 player.GetPet().SetPosX(0);
                 player.GetPet().SetPosY(0);
             }
+
         }
 
-        public int SetPlayerActive(dynamic data)
+        public int SetPlayerActiveFalse(string username, bool active)
         {
             int result = -1;
-            Console.WriteLine((string)data.username);
-            Console.WriteLine(listPlayer.Count);
-            Player currentPlayer = listPlayer.Find(x => x.GetPlayerName() == (string)data.username);
+
+            Player currentPlayer = listPlayer.Find(x => x.GetPlayerName() == username);
             if (currentPlayer != null)
             {
-                currentPlayer.SetIsActive(false);
+                currentPlayer.SetIsActive(active);
+                currentPlayer.GetPet().SetLastPosX(0f);
+                currentPlayer.GetPet().SetLastPosY(0f);
                 result = 1;
             }
 
@@ -134,7 +135,6 @@ namespace TheDemiteServer
 
         public List<Coordinate> PlayerRouting(dynamic data)
         {
-            //Player player = listPlayer.Find(x => x.GetPlayerId() == (string)data.id);
             Player player = listPlayer.Find(x => x.GetPlayerName() == (string)data.username);
             float latitude = (float)Convert.ToDouble(data.latitude);
             float longitude = (float)Convert.ToDouble(data.longitude);
@@ -168,8 +168,8 @@ namespace TheDemiteServer
                         playerInList.petLastPosY = player.GetPet().GetLastPosY();
                         playerInList.timeStartMove = player.GetPet().GetTimeStartMove();
                         playerInList.petState = player.GetPet().GetPetState();
-                        //playerInList.ballState = player.GetPet().GetBallState();
-                        //playerInList.petSpeed = player.GetPet().GetSpeed();
+                        playerInList.ballState = player.GetPet().GetBallState();
+                        playerInList.petSpeed = player.GetPet().GetSpeed();
 
                         listPlayerPos.Add(playerInList);
                     }
@@ -184,10 +184,21 @@ namespace TheDemiteServer
             Player curPlayer = listPlayer.Find(x => x.GetPlayerName() == (string)data.username);
             if (curPlayer != null)
             {
-                float lastPosX = curPlayer.GetPet().GetPosX();
-                float lastPosY = curPlayer.GetPet().GetPosY();
+                float lastPosX = float.MinValue;
+                float lastPosY = float.MinValue;
 
-                if (lastPosX == 0 && lastPosY == 0)
+                if ((float)data.petLastPosX == 0f && (float)data.petLastPosY == 0f)
+                {
+                    lastPosX = curPlayer.GetPet().GetPosX();
+                    lastPosY = curPlayer.GetPet().GetPosY();
+                }
+                else
+                {
+                    lastPosX = (float)data.petLastPosX + curPlayer.GetMapController().GetCenterPosX();
+                    lastPosY = (float)data.petLastPosY + curPlayer.GetMapController().GetCenterPosY();
+                }
+
+                if (lastPosX == 0f && lastPosY == 0f)
                 {
                     curPlayer.GetPet().SetLastPosX(curPlayer.GetMapController().GetCenterPosX());
                     curPlayer.GetPet().SetLastPosY(curPlayer.GetMapController().GetCenterPosY());
@@ -206,9 +217,25 @@ namespace TheDemiteServer
                 curPlayer.GetPet().SetPetState((string)data.petState);
 
                 curPlayer.GetPet().SetSpeed((float)data.speed);
-                // tambahan
-                //GetListMember(curPlayer.GetPlayerName());
             }
+        }
+
+        public float[] UpdateBallState(dynamic data)
+        {
+            float[] ballPos = new float[] { (float)data.ballPosX, (float)data.ballPosZ };
+
+            Player curPlayer = listPlayer.Find(x => x.GetPlayerName() == (string)data.username);
+            if (curPlayer != null)
+            {
+                curPlayer.GetPet().SetBallState((string)data.ballState);
+                if ((string)data.ballState != "throw")
+                {
+                    ballPos[0] += curPlayer.GetMapController().GetCenterPosX();
+                    ballPos[1] += curPlayer.GetMapController().GetCenterPosY();
+                }
+            }
+
+            return ballPos;
         }
 
         public float GetPlayerPosX()

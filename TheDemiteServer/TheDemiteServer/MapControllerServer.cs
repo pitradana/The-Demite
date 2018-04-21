@@ -6,17 +6,24 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Http;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace TheDemiteServer
 {
     class MapControllerServer
     {
         private string format = "geojson";                                                                                 // format data of mapzen vector tile
-        private string url = "http://167.205.7.235:8080/geoserver/gwc/service/tms/1.0.0/mapproject%3Abdg_planet_osm_roads@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
-        private string urlLine = "http://167.205.7.235:8080/geoserver/gwc/service/tms/1.0.0/mapproject%3Abdg_planet_osm_line@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
-        private string urlPolygon = "http://167.205.7.235:8080/geoserver/gwc/service/tms/1.0.0/mapproject%3Abandung_planet_osm_polygon@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
-        private string urlPoint = "http://167.205.7.235:8080/geoserver/gwc/service/tms/1.0.0/mapproject%3Abdg_planet_osm_point@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
+        //private string url = "http://167.205.7.235:8080/geoserver/gwc/service/tms/1.0.0/map%3Abandung_planet_osm_line_lines@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
+        //private string urlLine = "http://167.205.7.235:8080/geoserver/gwc/service/tms/1.0.0/map%3Abandung_planet_osm_line_lines@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
+        //private string urlPolygon = "http://167.205.7.235:8080/geoserver/gwc/service/tms/1.0.0/map%3Abandung_planet_osm_polygon_polygons@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
+        //private string urlPoint = "http://167.205.7.235:8080/geoserver/gwc/service/tms/1.0.0/map%3Abandung_planet_osm_point_points@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
+
+        private string url = "http://vectormap.pptik.id:8080/geoserver/gwc/service/tms/1.0.0/map%3Agis.osm_roads_free_1@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
+        private string urlLine = "http://vectormap.pptik.id:8080/geoserver/gwc/service/tms/1.0.0/map%3Agis.osm_railways_free_1@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
+        private string urlPolygon = "http://vectormap.pptik.id:8080/geoserver/gwc/service/tms/1.0.0/map%3Agis.osm_buildings_a_free_1@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
+        private string urlPoint = "http://vectormap.pptik.id:8080/geoserver/gwc/service/tms/1.0.0/map%3Agis.osm_pois_free_1@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
         private int zoom = 18;
+        
 
         private float centerMercatorX;
         private float centerMercatorY;
@@ -29,7 +36,6 @@ namespace TheDemiteServer
         private float centerPosY;
 
         private HttpClient http;
-        //private dynamic completeMapData;
         private ListMapData listMapData;
         private bool mapReady;
 
@@ -46,6 +52,16 @@ namespace TheDemiteServer
 
             this.centerPosX = float.MinValue;
             this.centerPosY = float.MinValue;
+
+            /* if using ITB proxy use this http initialization
+             * 
+            HttpClientHandler handler = new HttpClientHandler();
+            WebProxy proxy = new WebProxy("http://cache.itb.ac.id:8080");
+            proxy.Credentials = new NetworkCredential("", "");
+            handler.Proxy = proxy;
+            handler.UseProxy = true;
+            this.http = new HttpClient(handler);
+            */
 
             this.http = new HttpClient();
 
@@ -137,67 +153,73 @@ namespace TheDemiteServer
             for (int i = 0; i < building.features.Count; i++)
             {
                 var tempData = building.features[i];
-                if (tempData.geometry.type == "Polygon")
+                //Debug.WriteLine(tempData.properties.code);
+                if (tempData.properties.building != "")
                 {
-                    BuildingData buildingData = new BuildingData();
-                    buildingData.listCoordinate = new List<Coordinate>();
-
-                    for (int j = 0; j < tempData.geometry.coordinates[0].Count; j++)
+                    if (tempData.geometry.type == "Polygon")
                     {
-                        var coordinate = tempData.geometry.coordinates[0][j];
+                        BuildingData buildingData = new BuildingData();
+                        buildingData.listCoordinate = new List<Coordinate>();
+
+                        for (int j = 0; j < tempData.geometry.coordinates[0].Count; j++)
+                        {
+                            var coordinate = tempData.geometry.coordinates[0][j];
 
 
-                        //float[] mercator = GeoConverter.GeoCoorToMercatorProjection((float)Convert.ToDouble(coordinate[1]), (float)Convert.ToDouble(coordinate[0]));
-                        /*
+                            //float[] mercator = GeoConverter.GeoCoorToMercatorProjection((float)Convert.ToDouble(coordinate[1]), (float)Convert.ToDouble(coordinate[0]));
+                            /*
+                            float tempX = mercator[0] - this.centerMercatorX;
+                            float tempY = mercator[1] - this.centerMercatorY;
+                            */
+
+                            float tempX = (float)Convert.ToDouble(coordinate[0]) - this.centerMercatorX;
+                            float tempY = (float)Convert.ToDouble(coordinate[1]) - this.centerMercatorY;
+
+                            //coordinate[1] = tempX;
+                            //coordinate[0] = tempY;
+                            Coordinate coor = new Coordinate();
+                            coor.latitude = tempX;
+                            coor.longitude = tempY;
+                            buildingData.listCoordinate.Add(coor);
+                        }
+
+                        buildingData.buildingName = tempData.properties.name;
+
+                        buildingData.buildingCode = tempData.properties.code;
+                        this.listMapData.listBuildingData.Add(buildingData);
+
+                        //add centeroid of polygon
+                        BuildingData centeroidData = new BuildingData();
+                        centeroidData.listCoordinate = new List<Coordinate>();
+
+                        float[] centeroid = this.FindCenteroid(buildingData.listCoordinate);
+                        Coordinate coorCenteroid = new Coordinate();
+                        coorCenteroid.latitude = centeroid[0];
+                        coorCenteroid.longitude = centeroid[1];
+                        centeroidData.listCoordinate.Add(coorCenteroid);
+                        centeroidData.buildingName = tempData.properties.name;
+                        this.listMapData.listBuildingData.Add(centeroidData);
+                    }
+
+                    if (tempData.geometry.type == "Point")
+                    {
+                        BuildingData buildingData = new BuildingData();
+                        buildingData.listCoordinate = new List<Coordinate>();
+
+                        var coordinate = tempData.geometry.coordinates;
+                        float[] mercator = GeoConverter.GeoCoorToMercatorProjection((float)Convert.ToDouble(coordinate[1]), (float)Convert.ToDouble(coordinate[0]));
                         float tempX = mercator[0] - this.centerMercatorX;
                         float tempY = mercator[1] - this.centerMercatorY;
-                        */
-
-                        float tempX = (float)Convert.ToDouble(coordinate[0]) - this.centerMercatorX;
-                        float tempY = (float)Convert.ToDouble(coordinate[1]) - this.centerMercatorY;
-
                         //coordinate[1] = tempX;
                         //coordinate[0] = tempY;
                         Coordinate coor = new Coordinate();
                         coor.latitude = tempX;
                         coor.longitude = tempY;
                         buildingData.listCoordinate.Add(coor);
+
+                        buildingData.buildingName = tempData.properties.name;
+                        this.listMapData.listBuildingData.Add(buildingData);
                     }
-
-                    buildingData.buildingName = tempData.properties.name;
-                    this.listMapData.listBuildingData.Add(buildingData);
-
-                    //add centeroid of polygon
-                    BuildingData centeroidData = new BuildingData();
-                    centeroidData.listCoordinate = new List<Coordinate>();
-
-                    float[] centeroid = this.FindCenteroid(buildingData.listCoordinate);
-                    Coordinate coorCenteroid = new Coordinate();
-                    coorCenteroid.latitude = centeroid[0];
-                    coorCenteroid.longitude = centeroid[1];
-                    centeroidData.listCoordinate.Add(coorCenteroid);
-                    centeroidData.buildingName = tempData.properties.name;
-                    this.listMapData.listBuildingData.Add(centeroidData);
-                }
-
-                if (tempData.geometry.type == "Point")
-                {
-                    BuildingData buildingData = new BuildingData();
-                    buildingData.listCoordinate = new List<Coordinate>();
-
-                    var coordinate = tempData.geometry.coordinates;
-                    float[] mercator = GeoConverter.GeoCoorToMercatorProjection((float)Convert.ToDouble(coordinate[1]), (float)Convert.ToDouble(coordinate[0]));
-                    float tempX = mercator[0] - this.centerMercatorX;
-                    float tempY = mercator[1] - this.centerMercatorY;
-                    //coordinate[1] = tempX;
-                    //coordinate[0] = tempY;
-                    Coordinate coor = new Coordinate();
-                    coor.latitude = tempX;
-                    coor.longitude = tempY;
-                    buildingData.listCoordinate.Add(coor);
-
-                    buildingData.buildingName = tempData.properties.name;
-                    this.listMapData.listBuildingData.Add(buildingData);
                 }
             }
         }

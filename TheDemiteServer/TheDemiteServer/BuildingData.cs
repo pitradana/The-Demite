@@ -9,6 +9,7 @@ namespace TheDemiteServer
     class BuildingData
     {
         public string buildingName;
+        public string buildingCode;
         public List<Coordinate> listCoordinate;
     }
 }
