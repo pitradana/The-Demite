@@ -334,6 +334,7 @@
     <Compile Include="Assets\Script\MapToHome.cs" />
     <Compile Include="Assets\Script\NameController.cs" />
     <Compile Include="Assets\Script\NewBehaviourScript.cs" />
+    <Compile Include="Assets\Script\PetController.cs" />
     <Compile Include="Assets\Script\SignUpScript.cs" />
     <Compile Include="Assets\Script\SpeechRecognizer.cs" />
     <Compile Include="Assets\Script\SplashscreenScript.cs" />

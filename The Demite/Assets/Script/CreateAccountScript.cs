@@ -67,12 +67,15 @@ public class CreateAccountScript : MonoBehaviour {
         InputField emailField = GameObject.Find("InputField_Email").GetComponent<InputField>();
         InputField usernameField = GameObject.Find("InputField_Username").GetComponent<InputField>();
         InputField passwordField = GameObject.Find("InputField_Password").GetComponent<InputField>();
+        InputField petNameField = GameObject.Find("InputField_PetName").GetComponent<InputField>();
 
         string firstName = firstNameField.text;
         string lastName = lastNameField.text;
         string email = emailField.text;
         string username = usernameField.text;
         string password = passwordField.text;
+        string petName = petNameField.text;
+
 
         if (firstName == "")
         {
@@ -99,7 +102,12 @@ public class CreateAccountScript : MonoBehaviour {
             warningText.text = "password cannot be empty";
         }
 
-        if(firstName != "" && lastName != "" && email != "" && username != "" && password != "")
+        if (petName == "")
+        {
+            warningText.text = "pet name cannot be empty";
+        }
+
+        if (firstName != "" && lastName != "" && email != "" && username != "" && password != "" && petName != "")
         {
             AmqpControllerScript.amqpControl.exchangeSubscription.Handler = ProcessAccount;
 
@@ -111,6 +119,7 @@ public class CreateAccountScript : MonoBehaviour {
             request.email = email;
             request.username = username;
             request.password = password;
+            request.petName = petName;
 
             string requestJson = JsonUtility.ToJson(request);
 
@@ -128,5 +137,6 @@ public class CreateAccountScript : MonoBehaviour {
         public string email;
         public string username;
         public string password;
+        public string petName;
     }
 }

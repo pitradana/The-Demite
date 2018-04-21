@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Http;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace TheDemiteServer
 {
@@ -152,6 +153,7 @@ namespace TheDemiteServer
             for (int i = 0; i < building.features.Count; i++)
             {
                 var tempData = building.features[i];
+                //Debug.WriteLine(tempData.properties.code);
                 if (tempData.properties.building != "")
                 {
                     if (tempData.geometry.type == "Polygon")
@@ -182,6 +184,8 @@ namespace TheDemiteServer
                         }
 
                         buildingData.buildingName = tempData.properties.name;
+
+                        buildingData.buildingCode = tempData.properties.code;
                         this.listMapData.listBuildingData.Add(buildingData);
 
                         //add centeroid of polygon

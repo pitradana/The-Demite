@@ -74,6 +74,7 @@
     <Compile Include="ListMapData.cs" />
     <Compile Include="MapControllerServer.cs" />
     <Compile Include="MySQLDatabase.cs" />
+    <Compile Include="Pet.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayerManagement.cs" />
     <Compile Include="PolylineDecoder.cs" />

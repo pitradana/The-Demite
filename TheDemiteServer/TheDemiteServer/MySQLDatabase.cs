@@ -122,14 +122,14 @@ namespace TheDemiteServer
             }
         }
 
-        public int CreateNewAccount(string firstName, string lastName, string username, string password, string email)
+        public int CreateNewAccount(string firstName, string lastName, string username, string password, string email, string petName)
         {
             int affected = -1;
 
             int count = this.Count("user", "username='" + username + "'");
             if(count == 0)
             {
-                affected = this.Insert("user", "username, password, is_active, first_name, last_name, email", "'" + username + "', '" + password + "', 0, '" + firstName + "', '" + lastName + "', '" + email + "'");
+                affected = this.Insert("user", "username, password, is_active, first_name, last_name, email, pet_name", "'" + username + "', '" + password + "', 0, '" + firstName + "', '" + lastName + "', '" + email + "', '" + petName + "'");
             }
             else
             {
@@ -137,6 +137,76 @@ namespace TheDemiteServer
             }
 
             return affected;
+        }
+
+        public List<Object> GetPetData(string username)
+        {
+            List<Object> data = new List<Object>();
+            int userId = this.FindUserId(username);
+
+            string query = "SELECT pet_name, rest, energy, agility, stress, heart, money, xp, created_at, last_modified FROM game_data WHERE user_id='" + userId + "'";
+            if (this.OpenConnection())
+            {
+                MySqlCommand command = new MySqlCommand(query, connection);
+                MySqlDataReader reader = command.ExecuteReader();
+
+                string pet_name = "";
+                int rest = -1;
+                int energy = -1;
+                int agility = -1;
+                int stress = -1;
+                int heart = -1;
+                int money = -1;
+                int xp = -1;
+                string created_at = "";
+                string last_modified = "";
+
+                while (reader.Read())
+                {
+                    pet_name = (string)reader["pet_name"];
+                    rest = (int)reader["rest"];
+                    energy = (int)reader["energy"];
+                    agility = (int)reader["agility"];
+                    stress = (int)reader["stress"];
+                    heart = (int)reader["heart"];
+                    money = (int)reader["money"];
+                    xp = (int)reader["xp"];
+                    created_at = reader["created_at"].ToString();
+                    last_modified = reader["last_modified"].ToString();
+                }
+
+                reader.Close();
+                this.CloseConnection();
+
+                data.Add(heart);
+                data.Add(money);
+                data.Add(xp);
+                data.Add(rest);
+                data.Add(energy);
+                data.Add(agility);
+                data.Add(stress);
+                data.Add(pet_name);
+            }
+
+            return data;
+        }
+
+        public int UpdateStatus(string username, int rest, int energy, int agility, int stress, int heart, int money, int xp)
+        {
+            int result = -1;
+
+            int affected = this.Update("user", "is_active=0", "username='" + username + "'");
+            if (affected == 1)
+            {
+                int user_id = this.FindUserId(username);
+                affected = this.Update("game_data", "rest=" + rest + ", energy=" + energy + ", agility=" + agility + ", stress=" + stress + ", heart=" + heart + ", money=" + money + ", xp=" + xp, "user_id=" + user_id);
+                if (affected == 1)
+                {
+                    result = affected;
+                }
+            }
+
+            return result;
         }
 
         public int FindUserIdByEmail(string email)
@@ -150,6 +220,27 @@ namespace TheDemiteServer
                 MySqlDataReader reader = command.ExecuteReader();
 
                 while(reader.Read())
+                {
+                    id = (int)reader["id"];
+                }
+
+                reader.Close();
+                this.CloseConnection();
+            }
+
+            return id;
+        }
+
+        private int FindUserId(string username)
+        {
+            int id = -1;
+            string query = "SELECT id FROM User WHERE username='" + username + "'";
+            if (this.OpenConnection())
+            {
+                MySqlCommand command = new MySqlCommand(query, connection);
+                MySqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
                 {
                     id = (int)reader["id"];
                 }

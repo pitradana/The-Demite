@@ -272,7 +272,7 @@ public class MapController : MonoBehaviour {
         } 
     }
 
-    void RemoveOtherFromList(CymaticLabs.Unity3D.Amqp.SimpleJSON.JSONNode data )
+    void RemoveOtherFromList(CymaticLabs.Unity3D.Amqp.SimpleJSON.JSONNode data)
     {
         bool found = false;
         List<OtherPlayerData> removeList = new List<OtherPlayerData>();
@@ -549,20 +549,26 @@ public class MapController : MonoBehaviour {
         for(int i=0; i<buildingData.Count; i++)
         {
             var tempData = buildingData[i];
+            Debug.Log("testing = " + tempData);
 
-            if(tempData["listCoordinate"].Count == 1)
+            if (tempData["listCoordinate"].Count == 1)
             {
                 string buildingName = (string)tempData["buildingName"];
 
-                Debug.Log("nama gedung ini adalah  "+buildingName);
+                float buildingCode = (float)tempData["buildingCode"];
 
-                if(buildingName != null)
+                Debug.Log("nama gedung ini adalah  "+buildingName);
+                Debug.Log("building code = " + buildingCode);
+
+                if (buildingName != null)
                 {
-                    var coordinate = tempData["listCoordinate"][0];                  
+                    var coordinate = tempData["listCoordinate"][0];
+                    //var properties = tempData["buildingCode"];
+
                     this.ShowName(new Vector3((float)coordinate["latitude"], 12f, (float)coordinate["longitude"]), new Vector3(), buildingName, "MapObject", "buildingName", Color.red);
 
                     this.ShowGhost(new Vector3((float)coordinate["latitude"], 10f, (float)coordinate["longitude"]), buildingName, "buildingName");
-                    //Debug.Log();
+                    //Debug.Log("coba = "+ (float)coordinate["latitude"]);
                     //petObject.transform.position = new Vector3((float)coordinate["latitude"], 12f, (float)coordinate["longitude"]);
                     //Debug.Log("pocong = " + petObject.transform.position);
                 }
