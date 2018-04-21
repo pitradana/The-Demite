@@ -289,6 +289,12 @@
     <Reference Include="UnityEngine.StandardEvents">
       <HintPath>C:/Users/lidistudio/AppData/LocalLow/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.10/UnityEngine.StandardEvents.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Data.Sqlite">
+      <HintPath>Assets/Phonetic/Assets/Mono.Data.Sqlite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data">
+      <HintPath>Assets/Phonetic/Assets/System.Data.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Plugins\SpeechRecognizerManager.cs" />

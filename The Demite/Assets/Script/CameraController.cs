@@ -90,16 +90,16 @@ public class CameraController : MonoBehaviour {
 
         if (Physics.Raycast(ray, out hit, maxRayDistance))
         {
-<<<<<<< HEAD
+
             canOver = true;
             Debug.DrawLine(hit.point, hit.point + transform.up * 10, Color.green);
             Debug.Log("kena");
             ahh.text = "AH yes";
            
-=======
+
             Debug.DrawLine(hit.point, hit.point + transform.up * 10, Color.green);
             ahh.text = "AH yes";
->>>>>>> 1c562862582d80634b41f51eb1086080078c4a82
+
         }
         else
         {

@@ -10,7 +10,7 @@ public class SpeechRecognizerDemoSceneManager : MonoBehaviour
     public Text ah;
     public Text ftext;
     //public string t;
-    public float maxRayDistance = 100;
+    //public float maxRayDistance = 100;
 
     public GameObject CameraControlObject;
     private CameraController AccesControl;
