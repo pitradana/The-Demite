@@ -9,6 +9,11 @@ public class SpeechRecognizerDemoSceneManager : MonoBehaviour
 	private string _message = "";
     public Text ah;
     public Text ftext;
+<<<<<<< HEAD
+    //public string t;
+    //public float maxRayDistance = 100;
+=======
+>>>>>>> f50e1c8f08de09701cd6dae65fe0c796193c2128
 
     public GameObject CameraControlObject;
     private CameraController AccesControl;
