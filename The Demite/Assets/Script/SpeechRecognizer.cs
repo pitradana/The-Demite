@@ -13,6 +13,7 @@ public class SpeechRecognizer : MonoBehaviour {
     public GameObject CameraControlObject;
     private CameraController AccesControl;
     bool OnOver;
+    public bool ConData;
 
     #region MONOBEHAVIOUR
 
@@ -80,7 +81,7 @@ public class SpeechRecognizer : MonoBehaviour {
 
         DebugLog("Speech results:\n   " + string.Join("\n   ", texts));
         textVoice.text = string.Join("", texts);
-
+        ConData = true;
     }
 
     void OnSpeechError(string error)
@@ -203,6 +204,7 @@ public class SpeechRecognizer : MonoBehaviour {
         {
             _isListening = true;
             _speechManager.StartListening(1, "en-US");
+            ConData = false;
         }
 
     }

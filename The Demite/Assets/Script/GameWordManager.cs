@@ -11,6 +11,8 @@ public class GameWordManager : MonoBehaviour {
 
     private Word currentWord;
     public Text wordFromSpeech;
+    public Text TextData;
+    public Text TextInfo;
     GameObject pocong;
 
     public Image itemImage;

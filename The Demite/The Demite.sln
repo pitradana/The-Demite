@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
+# Visual Studio 2017
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "The Demite.Plugins", "The Demite.Plugins.csproj", "{1365049B-992C-63A7-0164-DCA3D8CF068B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "The Demite", "The Demite.csproj", "{CEB7DDEB-82B4-B352-D993-ED99B152D8B6}"
