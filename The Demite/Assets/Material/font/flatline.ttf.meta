@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 680d0680966e88644b9c1f6dff1cc48f
+timeCreated: 1519621965
+licenseType: Free
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: flatline
+  fontNames:
+  - flatline
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

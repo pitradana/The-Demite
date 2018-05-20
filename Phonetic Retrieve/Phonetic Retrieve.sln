@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phonetic Retrieve", "Phonetic Retrieve.csproj", "{7BCE2837-6ED6-9C66-ED89-612662E0E7E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phonetic Retrieve.Plugins", "Phonetic Retrieve.Plugins.csproj", "{562B68CE-102C-F21B-458F-805C782FD709}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7BCE2837-6ED6-9C66-ED89-612662E0E7E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BCE2837-6ED6-9C66-ED89-612662E0E7E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BCE2837-6ED6-9C66-ED89-612662E0E7E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BCE2837-6ED6-9C66-ED89-612662E0E7E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{562B68CE-102C-F21B-458F-805C782FD709}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{562B68CE-102C-F21B-458F-805C782FD709}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{562B68CE-102C-F21B-458F-805C782FD709}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{562B68CE-102C-F21B-458F-805C782FD709}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
