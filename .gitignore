@@ -12,7 +12,7 @@ Assets/AssetStoreTools*
 ExportedObj/
 .consulo/
 .csproj
-*.unityproj
+.unityproj
 .sln
 *.suo
 *.tmp
@@ -24,11 +24,11 @@ ExportedObj/
 *.pdb
 
 # Unity3D generated meta files
-*.pidb.meta
+.pidb.meta
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
 
 # Builds
-*.apk
-*.unitypackage
+.apk
+.unitypackage
