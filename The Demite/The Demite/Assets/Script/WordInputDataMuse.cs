@@ -26,7 +26,7 @@ public class WordInputDataMuse : MonoBehaviour {
 
     void Update()
     {
-        onData = AccesControl.ConData;
+        //onData = AccesControl.ConData;
         CopyText();
     }
 
@@ -86,10 +86,10 @@ public class WordInputDataMuse : MonoBehaviour {
     }
 
     public void CopyText() {
-        if (onData == true)
-        {
+        //if (onData == true)
+        //{
             StartCoroutine(getUnityWebRequest());
-        }
+        //}
     }
 
     string fixJson(string value) {

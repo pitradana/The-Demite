@@ -13,6 +13,7 @@ public class SpeechRecognizer : MonoBehaviour {
     public GameObject CameraControlObject;
     private CameraController AccesControl;
     bool OnOver;
+
     public bool ConData;
 
     #region MONOBEHAVIOUR
