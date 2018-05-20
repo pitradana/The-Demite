@@ -31,7 +31,7 @@ public class MapController : MonoBehaviour {
 
     private GameObject mainCam;
     private GameObject petObject;
-    private GameObject GhostObject;
+    public GameObject ground;
 
     public float centerPosX;
     public float centerPosY;
@@ -57,13 +57,13 @@ public class MapController : MonoBehaviour {
         otherPlayerDataList = new List<OtherPlayerData>();
 
         mainCam = GameObject.FindGameObjectWithTag("MainCamera");
-        petObject = GameObject.Find("Cube");
+        petObject = GameObject.Find("cu_puppy_shiba_a");
 
         //routeObject = GameObject.Find("RouteButton");
         //routeObject.GetComponent<Button>().onClick.AddListener(StartRouting);
 
         //posText = GameObject.Find("PosText").GetComponent<Text>();
-
+        //ground.transform.localScale = new Vector3(50f, 1f, 50f);
         this.InitDefaultProperties();
         this.UpdateGpsAndSendRequest();
         //StartCoroutine(this.StartGPS());
@@ -78,15 +78,15 @@ public class MapController : MonoBehaviour {
             this.UpdateGpsAndSendRequest();
         }
 
-        //OtherPetMovement();
+        OtherPetMovement();
     }
 
     void InitDefaultProperties()
     {
         this.uniqueId = Guid.NewGuid().ToString();
         this.playerName = PlayerPrefs.GetString("username");
-        this.latitude = -6.890439f; //-6.915108f; //-6.890439, 107.611256
-        this.longitude = 107.611256f; //107.607206f;
+        this.latitude = -6.929427f; //- 6.890439f; //-6.915108f; //-6.890439, 107.611256
+        this.longitude = 107.626651f; // 107.611256f; //107.607206f;
         this.lastLatitude = float.MinValue;
         this.lastLongitude = float.MinValue;
         this.petName = PlayerPrefs.GetString("petName"); // PlayerPrefs.GetString("petName");
@@ -180,12 +180,17 @@ public class MapController : MonoBehaviour {
 
         if(msg != null) //check for msg
         {
+            this.tileX = (int)msg["tileX"];
+            this.tileY = (int)msg["tileY"];
+            ground.transform.localScale = new Vector3(tileX, 1f, tileY);
+
             string id = (string)msg["id"];
             if (id == this.uniqueId) // check for guid or unique id
             {
                 string responseType = (string)msg["type"];
                 if (responseType == "map") // response for create map
                 {
+                    
                     //this.DestroyGameObjectByTagName("MapObject");
                     bool createNewMap = (bool)msg["needCreateMap"];
                     if (createNewMap)
@@ -362,12 +367,12 @@ public class MapController : MonoBehaviour {
             float otherPetLastPosX = (float)data[i]["petLastPosX"];
             float otherPetLastPosY = (float)data[i]["petLastPosY"];
 
-            string otherStartTImeMoveString = (string)data[i]["timeStartMove"];
+            string otherStartTimeMoveString = (string)data[i]["timeStartMove"];
             long otherStartTimeMove = 0L;
 
-            if (otherStartTImeMoveString != "")
+            if (otherStartTimeMoveString != "")
             {
-                otherStartTimeMove = Convert.ToInt64(otherStartTImeMoveString);
+                otherStartTimeMove = Convert.ToInt64(otherStartTimeMoveString);
             }
 
             string otherPetState = (string)data[i]["petState"];
@@ -559,7 +564,6 @@ public class MapController : MonoBehaviour {
                     }
 
                 }
-
             }
         }
     }
@@ -637,7 +641,6 @@ public class MapController : MonoBehaviour {
             if (tempData["listCoordinate"].Count == 1)
             {
                 string buildingName = (string)tempData["buildingName"];
-
                 float buildingCode = (float)tempData["buildingCode"];
 
                 Debug.Log("nama gedung ini adalah  "+buildingName);
@@ -648,9 +651,21 @@ public class MapController : MonoBehaviour {
                     var coordinate = tempData["listCoordinate"][0];
                     //var properties = tempData["buildingCode"];
 
-                    this.ShowName(new Vector3((float)coordinate["latitude"], 12f, (float)coordinate["longitude"]), new Vector3(), buildingName, "MapObject", "buildingName", Color.red);
+                    this.ShowName(new Vector3((float)coordinate["latitude"], 12f, (float)coordinate["longitude"]), new Vector3(), buildingName, "MapObject", "buildingName", Color.green);
 
-                    this.ShowGhost(new Vector3((float)coordinate["latitude"], 10f, (float)coordinate["longitude"]), buildingName, "buildingName");
+                    Debug.Log("coba1 latitude = " + latitude);
+                    Debug.Log("coba2 latitude coordinate = " + (float)coordinate["latitude"]);
+
+                    /*
+
+                    if (latitude >= coordinate["latitude"] && longitude <= coordinate["longitude"])
+                    {
+                        Debug.Log("coba1 latitude = " + latitude);
+                        Debug.Log("coba2 latitude coordinate = " + (float)coordinate["latitude"]);
+                        this.ShowGhost(new Vector3((float)coordinate["latitude"], 10f, (float)coordinate["longitude"]), buildingName, "buildingName");
+                    }
+                    */
+                    
                     //Debug.Log("coba = "+ (float)coordinate["latitude"]);
                     //petObject.transform.position = new Vector3((float)coordinate["latitude"], 12f, (float)coordinate["longitude"]);
                     //Debug.Log("pocong = " + petObject.transform.position);
@@ -674,6 +689,7 @@ public class MapController : MonoBehaviour {
         }
     }
 
+
     void CreateRoad(CymaticLabs.Unity3D.Amqp.SimpleJSON.JSONNode roadData)
     {
         List<Vector3[]> point = new List<Vector3[]>();
@@ -690,7 +706,7 @@ public class MapController : MonoBehaviour {
                 float latitude = (float)coordinate["latitude"];
                 float longitude = (float)coordinate["longitude"];
                 Debug.Log(latitude + " & " + longitude);
-                perPoint[k] = new Vector3(latitude, 8f, longitude);
+                perPoint[k] = new Vector3(latitude, 0f, longitude);
             }
 
             point.Add(perPoint);
@@ -730,6 +746,12 @@ public class MapController : MonoBehaviour {
             distance = float.MaxValue;
         }
     }
+
+    //void CreatePolygon3D(Vector3 origin, List<Vector3> vectors, List<Vector3> normals, List<Vector2> uvs, List<int> indices)
+    //{
+    //    Vector3 oTop = new Vector3(0, way.Height, 0);
+
+    //}
 
     void CreatePolygon(Vector2[] point2D, Vector3[] points, Color color, string tagName, string typeName)
     {

@@ -18,12 +18,18 @@ namespace TheDemiteServer
         //private string urlPolygon = "http://167.205.7.235:8080/geoserver/gwc/service/tms/1.0.0/map%3Abandung_planet_osm_polygon_polygons@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
         //private string urlPoint = "http://167.205.7.235:8080/geoserver/gwc/service/tms/1.0.0/map%3Abandung_planet_osm_point_points@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
 
+        private string url = "http://localhost:8080/geoserver/gwc/service/tms/1.0.0/bandung%3Abandung_planet_osm_line_lines@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
+        private string urlLine = "http://localhost:8080/geoserver/gwc/service/tms/1.0.0/bandung%3Abandung_planet_osm_line_lines@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
+        private string urlPolygon = "http://localhost:8080/geoserver/gwc/service/tms/1.0.0/bandung%3Abandung_planet_osm_polygon_polygons@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
+        private string urlPoint = "http://localhost:8080/geoserver/gwc/service/tms/1.0.0/bandung%3Abandung_planet_osm_point_points@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
+        private int zoom = 18;
+        /*
         private string url = "http://vectormap.pptik.id:8080/geoserver/gwc/service/tms/1.0.0/map%3Agis.osm_roads_free_1@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
-        private string urlLine = "http://vectormap.pptik.id:8080/geoserver/gwc/service/tms/1.0.0/map%3Agis.osm_railways_free_1@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
+        private string urlLine = "http://vectormap.pptik.id:8080/geoserver/gwc/service/tms/1.0.0/map%3Agis.osm_roads_free_1@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
         private string urlPolygon = "http://vectormap.pptik.id:8080/geoserver/gwc/service/tms/1.0.0/map%3Agis.osm_buildings_a_free_1@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
         private string urlPoint = "http://vectormap.pptik.id:8080/geoserver/gwc/service/tms/1.0.0/map%3Agis.osm_pois_free_1@EPSG%3A900913@geojson/{0}/{1}/{2}.{3}";
         private int zoom = 18;
-        
+        */
 
         private float centerMercatorX;
         private float centerMercatorY;

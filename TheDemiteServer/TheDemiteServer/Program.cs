@@ -82,7 +82,7 @@ namespace TheDemiteServer
                             response.type = msg["type"];
                             response.count = count;
                             response.username = username;
-                            //response.data = db.GetPetData(username);
+                            response.petName = username;
 
                             var jsonString = JsonConvert.SerializeObject(response);
 
@@ -447,8 +447,9 @@ namespace TheDemiteServer
             public string id;
             public string type;
             public string username;
+            public string petName;
             public int count;
-            public List<Object> data;
+            //public List<Object> data;
         }
 
         class NewAccountResponseJson

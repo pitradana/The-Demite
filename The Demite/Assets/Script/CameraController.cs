@@ -10,6 +10,11 @@ public class CameraController : MonoBehaviour
     private Quaternion rotFix;
     private bool gyroSupported;
 
+    Rigidbody rigid;
+    Camera viewCamera;
+    Vector3 velocity;
+    public float moveSpeed = 5;
+
     private float maxRayDistance = 100f;
     public Text debugText;
     public bool canOver = false;
@@ -28,6 +33,9 @@ public class CameraController : MonoBehaviour
         camParent.transform.position = transform.position;
         transform.parent = camParent.transform;
 
+        rigid = GetComponent<Rigidbody>();
+        viewCamera = Camera.main;
+
         if (gyroSupported)
         {
             gyro = Input.gyro;
@@ -42,7 +50,7 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        /*
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
 
@@ -66,6 +74,15 @@ public class CameraController : MonoBehaviour
         }
 
         transform.localRotation = gyro.attitude * rotFix;
+        */
 
+        Vector3 mousePos = viewCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, viewCamera.transform.position.y));
+        transform.LookAt(mousePos + Vector3.up * transform.position.y);
+        velocity = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized * moveSpeed;
+    }
+
+    void FixedUpdate()
+    {
+        rigid.MovePosition(rigid.position + velocity * Time.fixedDeltaTime);
     }
 }

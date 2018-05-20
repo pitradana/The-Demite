@@ -47,10 +47,10 @@ public class LoginScript : MonoBehaviour {
                     int count = (int)msg["count"];
                     if(count == 1)
                     {
+                        LoadStatus(msg);
                         Time.timeScale = 1;
                         SceneManager.LoadScene("MainScene");
                     }
-
                     else
                     {
                         warning.text = "username or password not found";
@@ -95,6 +95,20 @@ public class LoginScript : MonoBehaviour {
             string requestToJson = JsonUtility.ToJson(request);
             AmqpClient.Publish(AmqpControllerScript.amqpControl.requestExchange, AmqpControllerScript.amqpControl.requestRoutingKey, requestToJson);
         }
+    }
+
+    void LoadStatus(CymaticLabs.Unity3D.Amqp.SimpleJSON.JSONNode msg)
+    {
+
+        PlayerPrefs.SetString("username", (string)msg["username"]);
+        //PlayerPrefs.SetInt("Health", (int)msg["data"][0]);
+        //PlayerPrefs.SetInt("Bones", (int)msg["data"][1]);
+        //PlayerPrefs.SetInt("XP", (int)msg["data"][2]);
+        //PlayerPrefs.SetInt("Sleep", (int)msg["data"][3]);
+        //PlayerPrefs.SetInt("Food", (int)msg["data"][4]);
+        //PlayerPrefs.SetInt("Walk", (int)msg["data"][5]);
+        //PlayerPrefs.SetInt("Fun", (int)msg["data"][6]);
+        PlayerPrefs.SetString("petName", (string)msg["username"]);
     }
 
     [Serializable]
